@@ -7,6 +7,7 @@ import { slateEditor } from '@payloadcms/richtext-slate'
 import { buildConfig } from 'payload/config'
 
 import Users from './collections/Users'
+import Options from './collections/web/Options'
 
 export default buildConfig({
   admin: {
@@ -14,7 +15,8 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users],
+  collections: [Users, Options],
+  cors: "*",    //HZUMAETA: Si no lo pongom tendré problemas de cors en el cliente
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
