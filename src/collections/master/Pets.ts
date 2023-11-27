@@ -6,10 +6,12 @@ const Pets: CollectionConfig = {
   access: {
     read: () => true,
     create: () => true,
+    delete: () => true,
+    update: () => true,
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["name","specie","breed","sex","birthday"]
+    defaultColumns: ["name","specie","breed","sex","birthday","human"]
   },
   fields: [
     {
@@ -18,22 +20,17 @@ const Pets: CollectionConfig = {
       required: true,
     },
     {
+      name: 'human', // required
+      type: 'text', // required
+      required: true,
+    },
+    {
       name: 'comment', // required
       type: 'textarea', // required
     },
     {
-      name: 'order', // required
-      type: 'number', // required
-    },
-    {
-      name: 'specie', // required
+      name: 'address', // required
       type: 'text', // required
-      required: true,
-    },
-    {
-      name: 'breed', // required
-      type: 'text', // required
-      required: true,
     },
     {
       name: 'sex', // required
@@ -43,7 +40,42 @@ const Pets: CollectionConfig = {
       name: 'birthday', // required
       type: 'date', // required
     },
-
+    {
+      name: 'specie', // required
+      type: 'group', // required
+      interfaceName: 'Specie', // optional
+      fields: [
+        // required
+        {
+          name: 'specieId',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'breed', // required
+      type: 'group', // required
+      interfaceName: 'Breed', // optional
+      fields: [
+        // required
+        {
+          name: 'breedId',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
   ],
 }
 

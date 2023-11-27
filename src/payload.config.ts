@@ -9,6 +9,7 @@ import { buildConfig } from 'payload/config'
 import Users from './collections/Users'
 import Options from './collections/web/Options'
 import Pets from './collections/master/Pets'
+import Species from './collections/master/Species'
 
 export default buildConfig({
   admin: {
@@ -16,7 +17,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Pets, Users, Options],
+  collections: [Species, Pets, Users, Options],
   cors: "*",    //HZUMAETA: Si no lo pongom tendré problemas de cors en el cliente
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
