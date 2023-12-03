@@ -41,10 +41,6 @@ const Pets: CollectionConfig = {
       type: 'date', // required
     },
     {
-      name: 'image', // required
-      type: 'text', // required
-    },
-    {
       name: 'specie', // required
       type: 'group', // required
       interfaceName: 'Specie', // optional
