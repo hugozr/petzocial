@@ -7,6 +7,7 @@ const Species: CollectionConfig = {
     read: () => true,
     create: () => true,
     delete: () => true,
+    update: () => true,
   },
   admin: {
     useAsTitle: 'name',
@@ -27,6 +28,12 @@ const Species: CollectionConfig = {
       type: 'number', // required
     },
     {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+    {
       name: 'breeds', // required
       type: 'array', // required
       label: 'Breeds',
@@ -41,18 +48,13 @@ const Species: CollectionConfig = {
           name: 'name',
           type: 'text',
         },
-        // {
-        //   name: 'image',
-        //   type: 'upload',
-        //   relationTo: 'media',
-        //   required: true,
-        // },
+        
         {
           name: 'order',
           type: 'number',
         },
       ],
-    }
+    },
   ],
 }
 
