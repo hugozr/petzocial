@@ -11,7 +11,7 @@ const Vets: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["name","specie","breed","sex","birthday","human"]
+    defaultColumns: ["name","phone", "address","email", "url"]
   },
   fields: [
     {
@@ -45,6 +45,32 @@ const Vets: CollectionConfig = {
       name: 'vetImage', // required
       type: 'upload', // required
       relationTo: 'media', // required
+    },
+    {
+      name: 'healthServices', // required
+      type: 'array', // required
+      label: 'HealthServices',
+      interfaceName: 'HealthServicesx', // optional
+      labels: {
+        singular: 'HealthService',
+        plural: 'HealthServices',
+      },
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'order',
+          type: 'number',
+        },
+        {
+          name: 'healthService', // required
+          type: 'relationship', // required
+          relationTo: 'health-services', // required
+          hasMany: false,
+        }
+      ],
     },
   ],
 }

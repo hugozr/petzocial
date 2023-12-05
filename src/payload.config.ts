@@ -13,6 +13,7 @@ import Species from "./collections/master/Species";
 import { Media } from "./collections/web/Media";
 import Welcome from "./globals/Welcome";
 import Vets from "./collections/health/Vets";
+import HealthServices from "./collections/health/HealthServices";
 
 export default buildConfig({
   admin: {
@@ -28,10 +29,11 @@ export default buildConfig({
   collections: [
     Species,
     Pets,
+    Vets,
+    HealthServices,
+    Media,
     Users,
     Options,
-    Vets,
-    Media
   ],
   globals:[
     Welcome
