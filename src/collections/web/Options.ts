@@ -9,6 +9,7 @@ const Options: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
+    defaultColumns: ["name","order","redirect"]
   },
   fields: [
     {

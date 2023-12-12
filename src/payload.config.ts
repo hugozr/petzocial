@@ -9,6 +9,7 @@ import { buildConfig } from "payload/config";
 import Users from "./collections/Users";
 import Options from "./collections/web/Options";
 import Pets from "./collections/master/Pets";
+import Humans from "./collections/master/Humans";
 import Species from "./collections/master/Species";
 import { Media } from "./collections/web/Media";
 import Welcome from "./globals/Welcome";
@@ -32,6 +33,7 @@ export default buildConfig({
     Vets,
     HealthServices,
     Media,
+    Humans,
     Users,
     Options,
   ],
