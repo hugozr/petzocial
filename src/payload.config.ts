@@ -15,6 +15,7 @@ import { Media } from "./collections/web/Media";
 import Welcome from "./globals/Welcome";
 import Vets from "./collections/health/Vets";
 import HealthServices from "./collections/health/HealthServices";
+import Roles from "./collections/Roles";
 
 export default buildConfig({
   admin: {
