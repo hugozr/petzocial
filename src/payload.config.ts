@@ -15,7 +15,9 @@ import { Media } from "./collections/web/Media";
 import Welcome from "./globals/Welcome";
 import Vets from "./collections/health/Vets";
 import HealthServices from "./collections/health/HealthServices";
-import Roles from "./collections/Roles";
+import Communities from "./collections/community/Communities";
+import CommunityTypes from "./collections/community/CommunityTypes";
+import VetTypes from "./collections/health/VetTypes";
 
 export default buildConfig({
   admin: {
@@ -31,12 +33,15 @@ export default buildConfig({
   collections: [
     Species,
     Pets,
+    VetTypes,
     Vets,
     HealthServices,
     Media,
     Humans,
-    Users,
+    CommunityTypes,
+    Communities,
     Options,
+    Users,
   ],
   globals:[
     Welcome

@@ -1,4 +1,6 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload/types';
+import { associateHuman } from '../utils';
+
 
 const Users: CollectionConfig = {
   slug: 'users',
@@ -59,6 +61,15 @@ const Users: CollectionConfig = {
       ],
     } 
   ],
+  endpoints: [
+    {
+      path: '/:userId/associate',
+      method: 'post',
+      handler: async (req, res, next) => {
+        const associatedUser = await associateHuman(req.params.userId); //Si es nulo no se ha podido asociar
+        res.status( 200 ).send(associatedUser)
+      },
+    },
+  ],
 }
-
 export default Users

@@ -69,9 +69,16 @@ const Vets: CollectionConfig = {
           type: 'relationship', // required
           relationTo: 'health-services', // required
           hasMany: false,
-        }
+        },
+        
       ],
     },
+    {
+      name: 'vetType', // required
+      type: 'relationship', // required
+      relationTo: 'vet-types', // required
+      hasMany: false,
+    }
   ],
 }
 export default Vets
