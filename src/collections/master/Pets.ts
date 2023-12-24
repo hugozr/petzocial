@@ -1,4 +1,6 @@
+import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
+import { filterPets } from '../../utils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',
@@ -13,6 +15,16 @@ const Pets: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ["name","specie","breed","sex","birthday","human"]
   },
+  endpoints: [
+    {
+      path: "/filter-me",
+      method: "put",
+      handler: async (req, res, next) => {
+        const associatedUser = await filterPets(req.body); //Si es nulo no se ha podido asociar
+        res.status( 200 ).send(associatedUser)
+      },
+    },
+  ],
   fields: [
     {
       name: 'name', // required

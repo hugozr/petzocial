@@ -34,5 +34,31 @@ export const associateHuman = async (userId) => {
     }
     return returned
 }
-
-// module.exports = associateHuman;
+export const filterPets = async (data: any) => {
+    const pets = await payload.find({
+        collection: 'pets',
+        page: data.page,
+        limit: data.limit,    
+        where: {
+            or: [
+                {
+                    name: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    comment: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    human: {
+                        like: data.filter,
+                    },
+                },
+            ]
+        },
+    });
+    console.log()
+    return pets;
+}

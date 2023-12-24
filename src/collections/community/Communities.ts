@@ -40,14 +40,14 @@ const Communities: CollectionConfig = {
         {
           name: 'x',
           type: 'text',
-          required: true,
+          required: false,
           minLength: 3,
           maxLength: 20,
         },
         {
           name: 'y',
           type: 'text',
-          required: true,
+          required: false,
           minLength: 3,
           maxLength: 20,
         },
