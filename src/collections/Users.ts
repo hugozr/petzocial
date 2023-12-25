@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, filterUsers } from '../utils';
+import { associateHuman, filterUsers, getUsers } from '../utils';
 
 
 const Users: CollectionConfig = {
@@ -24,6 +24,7 @@ const Users: CollectionConfig = {
       name: 'username', // required
       type: 'text', // required
       required: true,
+      unique: true
     },
     {
       name: 'human', // required
@@ -69,7 +70,15 @@ const Users: CollectionConfig = {
       },
     },
     {
-      path: "/filter-me",
+      path: '/:username/users-by-name',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const user = await getUsers(req.params.username); 
+        res.status( 200 ).send(user)
+      },
+    },
+    {
+      path: '/filter-me',
       method: "put",
       handler: async (req, res, next) => {
         const users = await filterUsers(req.body);

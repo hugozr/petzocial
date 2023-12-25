@@ -18,7 +18,6 @@ const getUserById = async (id) => {
     });
     return user;
 }
-
 export const associateHuman = async (userId) => {
     const user = await getUserById(userId);
     const humans = await getHumansByEmail(user.email);
@@ -33,6 +32,17 @@ export const associateHuman = async (userId) => {
         });
     }
     return returned
+}
+export const getUsers = async (username) => {
+    const users = await payload.find({
+        collection: 'users',
+        where: {
+            username: {
+                equals: username,
+            },
+        },
+    });
+    return users;
 }
 export const filterPets = async (data: any) => {
     const pets = await payload.find({
