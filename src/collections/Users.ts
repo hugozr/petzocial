@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman } from '../utils';
+import { associateHuman, filterUsers } from '../utils';
 
 
 const Users: CollectionConfig = {
@@ -15,8 +15,6 @@ const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   fields: [
-    // Email added by default
-    // Add more fields as needed
     {
       name: 'email', // required
       type: 'text', // required
@@ -68,6 +66,14 @@ const Users: CollectionConfig = {
       handler: async (req, res, next) => {
         const associatedUser = await associateHuman(req.params.userId); //Si es nulo no se ha podido asociar
         res.status( 200 ).send(associatedUser)
+      },
+    },
+    {
+      path: "/filter-me",
+      method: "put",
+      handler: async (req, res, next) => {
+        const users = await filterUsers(req.body);
+        res.status( 200 ).send(users);
       },
     },
   ],

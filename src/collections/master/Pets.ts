@@ -20,8 +20,8 @@ const Pets: CollectionConfig = {
       path: "/filter-me",
       method: "put",
       handler: async (req, res, next) => {
-        const associatedUser = await filterPets(req.body); //Si es nulo no se ha podido asociar
-        res.status( 200 ).send(associatedUser)
+        const pets = await filterPets(req.body);
+        res.status( 200 ).send(pets);
       },
     },
   ],

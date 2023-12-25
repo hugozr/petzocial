@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { filterCommunities } from '../../utils';
 
 const Communities: CollectionConfig = {
   slug: 'communities',
@@ -13,6 +14,16 @@ const Communities: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ["name","address","comment"]
   },
+  endpoints: [
+    {
+      path: "/filter-me",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await filterCommunities(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+  ],
   fields: [
     {
       name: 'name', // required

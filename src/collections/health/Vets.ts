@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { filterVets } from '../../utils';
 
 const Vets: CollectionConfig = {
   slug: 'vets',
@@ -13,6 +14,16 @@ const Vets: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ["name","phone", "address","email", "url"]
   },
+  endpoints: [
+    {
+      path: "/filter-me",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await filterVets(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+  ],
   fields: [
     {
       name: 'name', // required
