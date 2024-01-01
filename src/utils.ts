@@ -192,3 +192,36 @@ export const filterUsers = async (data: any) => {
     });
     return communities;
 }
+export const communityUpdate = async (userId: string, data: any) => {
+    //HZUMAETA: Recibe en el body {"operation": "insert" || "delete", "communityId": communityId}
+    console.log(userId, data);
+    const users: any = await payload.findByID({
+        collection: 'users',
+        id: userId
+    });
+    const operation = data.operation;
+    let communities = [];
+    if( users.communities != undefined){
+        users.communities.map(com =>{
+            communities.push(com.id);
+        });
+    }
+    
+    //HZUMAETA: Armo el campo con el arreglo de comunidades que corresponden
+    if(operation == "insert"){
+        communities.push(data.communityId);
+    }else{
+        communities = communities.filter(valor => valor !== data.communityId);
+    }
+
+    console.log(communities);
+    // 658af3a52b529dec99e1bd98
+    const result = await payload.update({
+        collection: 'users', // required
+        id: userId, // required
+        data: {
+          communities
+        },
+    })      
+    return users;
+}

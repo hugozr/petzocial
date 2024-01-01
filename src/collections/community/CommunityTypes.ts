@@ -23,6 +23,11 @@ const CommunityTypes: CollectionConfig = {
       name: 'comment', // required
       type: 'textarea', // required
     },
+    {
+      name: 'disable', // required
+      type: 'checkbox', // required
+      defaultValue: false,
+    },
   ],
 }
 

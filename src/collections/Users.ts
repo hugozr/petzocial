@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, filterUsers, getUsers } from '../utils';
+import { associateHuman, communityUpdate, filterUsers, getUsers } from '../utils';
 
 
 const Users: CollectionConfig = {
@@ -31,6 +31,12 @@ const Users: CollectionConfig = {
       type: 'relationship', // required
       relationTo: 'humans', // required
       hasMany: false,
+    },
+    {
+      name: 'communities', // required
+      type: 'relationship', // required
+      relationTo: 'communities', // required
+      hasMany: true,
     },
    {
       name: 'roles', // required
@@ -82,6 +88,15 @@ const Users: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const users = await filterUsers(req.body);
+        res.status( 200 ).send(users);
+      },
+    },
+    
+    {
+      path: '/:userId/community-update',
+      method: "put",
+      handler: async (req, res, next) => {
+        const users = await communityUpdate(req.params.userId, req.body);
         res.status( 200 ).send(users);
       },
     },
