@@ -1,8 +1,8 @@
 import { CollectionConfig } from 'payload/types'
-import { filterVets } from '../../utils';
+import { filterPetshops } from '../../utils';
 
-const Vets: CollectionConfig = {
-  slug: 'vets',
+const Petshops: CollectionConfig = {
+  slug: 'petshops',
   auth: false,
   access: {
     read: () => true,
@@ -19,7 +19,7 @@ const Vets: CollectionConfig = {
       path: "/filter-me",
       method: "put",
       handler: async (req, res, next) => {
-        const pets = await filterVets(req.body);
+        const pets = await filterPetshops(req.body);
         res.status( 200 ).send(pets);
       },
     },
@@ -58,12 +58,12 @@ const Vets: CollectionConfig = {
       relationTo: 'media', // required
     },
     {
-      name: 'healthServices', // required
+      name: 'careServices', // required
       type: 'array', // required
-      label: 'HealthServices',
+      label: 'CareServices',
       labels: {
-        singular: 'HealthService',
-        plural: 'HealthServices',
+        singular: 'CareService',
+        plural: 'CareServices',
       },
       fields: [
         {
@@ -75,20 +75,19 @@ const Vets: CollectionConfig = {
           type: 'number',
         },
         {
-          name: 'healthService', // required
+          name: 'careService', // required
           type: 'relationship', // required
-          relationTo: 'health-services', // required
+          relationTo: 'care-services', // required
           hasMany: false,
         },
-        
       ],
     },
     {
-      name: 'vetType', // required
+      name: 'petshopType', // required
       type: 'relationship', // required
-      relationTo: 'vet-types', // required
+      relationTo: 'petshop-types', // required
       hasMany: false,
     }
   ],
 }
-export default Vets
+export default Petshops

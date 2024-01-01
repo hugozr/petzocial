@@ -13,11 +13,15 @@ import Humans from "./collections/master/Humans";
 import Species from "./collections/master/Species";
 import { Media } from "./collections/web/Media";
 import Welcome from "./globals/Welcome";
-import Vets from "./collections/health/Vets";
-import HealthServices from "./collections/health/HealthServices";
 import Communities from "./collections/community/Communities";
 import CommunityTypes from "./collections/community/CommunityTypes";
+// import HealthServices from "./collections/health/HealthServices";
 import VetTypes from "./collections/health/VetTypes";
+import Vets from "./collections/health/Vets";
+import HealthServices from "./collections/health/HealthServices";
+import CareServices from "./collections/care/CareServices";
+import Petshops from "./collections/care/Petshops";
+import PetshopTypes from "./collections/care/PetshopTypes";
 
 export default buildConfig({
   admin: {
@@ -36,6 +40,9 @@ export default buildConfig({
     VetTypes,
     Vets,
     HealthServices,
+    PetshopTypes,
+    Petshops,
+    CareServices,
     Media,
     Humans,
     CommunityTypes,

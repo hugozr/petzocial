@@ -95,6 +95,28 @@ export const filterVets = async (data: any) => {
     console.log()
     return vets;
 }
+export const filterPetshops = async (data: any) => {
+    const petshops = await payload.find({
+        collection: 'petshops',
+        page: data.page,
+        limit: data.limit,    
+        where: {
+            or: [
+                {
+                    name: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    comment: {
+                        like: data.filter,
+                    },
+                },
+            ]
+        },
+    });
+    return petshops;
+}
 export const filterHumans = async (data: any) => {
     const humans = await payload.find({
         collection: 'humans',
