@@ -53,7 +53,7 @@ const Petshops: CollectionConfig = {
       type: 'textarea', // required
     },
     {
-      name: 'vetImage', // required
+      name: 'petshopImage', // required
       type: 'upload', // required
       relationTo: 'media', // required
     },

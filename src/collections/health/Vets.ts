@@ -58,6 +58,26 @@ const Vets: CollectionConfig = {
       relationTo: 'media', // required
     },
     {
+      name: 'coordinates', // required
+      type: 'group', // required
+      fields: [
+        {
+          name: 'x',
+          type: 'text',
+          required: false,
+          minLength: 3,
+          maxLength: 20,
+        },
+        {
+          name: 'y',
+          type: 'text',
+          required: false,
+          minLength: 3,
+          maxLength: 20,
+        },
+      ],
+    },
+    {
       name: 'healthServices', // required
       type: 'array', // required
       label: 'HealthServices',
