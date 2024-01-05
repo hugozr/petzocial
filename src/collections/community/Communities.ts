@@ -47,7 +47,6 @@ const Communities: CollectionConfig = {
       type: 'group', // required
       interfaceName: 'Coordinates', // optional
       fields: [
-        // required
         {
           name: 'x',
           type: 'text',

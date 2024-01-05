@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterHumans } from '../../utils';
+import { filterHumans, getHumansByEmail, humanAssignedToPet } from '../../utils';
 
 const Humans: CollectionConfig = {
   slug: 'humans',
@@ -19,8 +19,23 @@ const Humans: CollectionConfig = {
       path: "/filter-me",
       method: "put",
       handler: async (req, res, next) => {
-        console.log(req.body);
         const humans = await filterHumans(req.body); 
+        res.status( 200 ).send(humans);
+      },
+    },
+    {
+      path: "/:email/by-email",
+      method: "get",
+      handler: async (req, res, next) => {
+        const humans = await getHumansByEmail(req.params.email); 
+        res.status( 200 ).send(humans);
+      },
+    },
+    {
+      path: "/:id/assigned-to/:petId",
+      method: "post",
+      handler: async (req, res, next) => {
+        const humans = await humanAssignedToPet(req.params.id, req.params.petId ); 
         res.status( 200 ).send(humans);
       },
     },
@@ -83,9 +98,35 @@ const Humans: CollectionConfig = {
       type: 'date', // required
     },
     {
+      name: 'coordinates', // required
+      type: 'group', // required
+      fields: [
+        {
+          name: 'x',
+          type: 'text',
+          required: false,
+          minLength: 3,
+          maxLength: 20,
+        },
+        {
+          name: 'y',
+          type: 'text',
+          required: false,
+          minLength: 3,
+          maxLength: 20,
+        },
+      ],
+    },
+    {
       name: 'humanImage', // required
       type: 'upload', // required
       relationTo: 'media', // required
+    },
+    {
+      name: 'pets', // required
+      type: 'relationship', // required
+      relationTo: 'pets', // required
+      hasMany: true,
     },
   ],
 }

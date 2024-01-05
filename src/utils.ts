@@ -1,6 +1,6 @@
 import payload from 'payload'
 
-const getHumansByEmail = async (email) => {
+export const getHumansByEmail = async (email) => {
     const humans = await payload.find({
         collection: 'humans',
         where: {
@@ -216,15 +216,15 @@ export const filterUsers = async (data: any) => {
 }
 export const communityUpdate = async (userId: string, data: any) => {
     //HZUMAETA: Recibe en el body {"operation": "insert" || "delete", "communityId": communityId}
-    console.log(userId, data);
-    const users: any = await payload.findByID({
+    const user: any = await payload.findByID({
         collection: 'users',
         id: userId
     });
     const operation = data.operation;
+    //HZUMAETA: Debo campturar los IDs
     let communities = [];
-    if( users.communities != undefined){
-        users.communities.map(com =>{
+    if( user.communities != undefined){
+        user.communities.map(com =>{
             communities.push(com.id);
         });
     }
@@ -236,8 +236,6 @@ export const communityUpdate = async (userId: string, data: any) => {
         communities = communities.filter(valor => valor !== data.communityId);
     }
 
-    console.log(communities);
-    // 658af3a52b529dec99e1bd98
     const result = await payload.update({
         collection: 'users', // required
         id: userId, // required
@@ -245,5 +243,30 @@ export const communityUpdate = async (userId: string, data: any) => {
           communities
         },
     })      
-    return users;
+    return result;
+}
+export const humanAssignedToPet = async (humanId: string, petId: string) => {
+
+    const human: any = await payload.findByID({
+        collection: 'humans',
+        id: humanId
+    });
+    if (human){
+        // const owns: any = human.pets;
+        const pets = human.pets.map(pet => pet.id);
+        if (!pets.includes(petId)){
+            pets.push(petId);
+            const result = await payload.update({
+                collection: 'humans', // required
+                id: humanId, // required
+                data: {
+                  pets
+                },
+            })   
+        }
+    }
+    else {
+        return null;
+    }
+    return {"ok": "ok"};
 }
