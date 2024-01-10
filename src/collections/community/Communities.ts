@@ -69,11 +69,27 @@ const Communities: CollectionConfig = {
       relationTo: 'media', // required
     },
     {
+      name: 'modality', // required
+      type: 'select', // required
+      hasMany: false,
+      defaultValue: 'public',
+      options: [
+        {
+          label: 'Public',
+          value: 'public',
+        },
+        {
+          label: 'Private',
+          value: 'private',
+        },
+      ],
+    },
+    {
       name: 'type', // required
       type: 'relationship', // required
       relationTo: 'community-types', // required
       hasMany: false,
-    }
+    },
   ],
 }
 

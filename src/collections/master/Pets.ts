@@ -31,11 +31,6 @@ const Pets: CollectionConfig = {
       type: 'text', // required
       required: true,
     },
-    // {
-    //   name: 'human', // required
-    //   type: 'text', // required
-    //   required: true,
-    // },
     {
       name: 'comment', // required
       type: 'textarea', // required
@@ -108,28 +103,6 @@ const Pets: CollectionConfig = {
         },
       ],
     },
-    // {
-    //   name: 'humans', // required
-    //   type: 'array', // required
-    //   label: 'Humans',
-    //   maxRows: 10,
-    //   labels: {
-    //     singular: 'Human',
-    //     plural: 'Humans',
-    //   },
-    //   fields: [
-    //     {
-    //       name: 'humanId',
-    //       type: 'text',
-    //       required: true,
-    //     },
-    //     {
-    //       name: 'humanName',
-    //       type: 'text',
-    //       required: true,
-    //     },
-    //   ],
-    // },
   ],
 }
 

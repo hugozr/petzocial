@@ -48,7 +48,7 @@ export const filterPets = async (data: any) => {
     const pets = await payload.find({
         collection: 'pets',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -62,7 +62,7 @@ export const filterPets = async (data: any) => {
                     },
                 },
                 {
-                    human: {
+                    "human.name": {
                         like: data.filter,
                     },
                 },
@@ -76,7 +76,7 @@ export const filterVets = async (data: any) => {
     const vets = await payload.find({
         collection: 'vets',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -99,7 +99,7 @@ export const filterPetshops = async (data: any) => {
     const petshops = await payload.find({
         collection: 'petshops',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -121,7 +121,7 @@ export const filterHumans = async (data: any) => {
     const humans = await payload.find({
         collection: 'humans',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -164,7 +164,7 @@ export const filterCommunities = async (data: any) => {
     const communities = await payload.find({
         collection: 'communities',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -191,7 +191,7 @@ export const filterUsers = async (data: any) => {
     const communities = await payload.find({
         collection: 'users',
         page: data.page,
-        limit: data.limit,    
+        limit: data.limit,
         where: {
             or: [
                 {
@@ -223,16 +223,16 @@ export const communityUpdate = async (userId: string, data: any) => {
     const operation = data.operation;
     //HZUMAETA: Debo campturar los IDs
     let communities = [];
-    if( user.communities != undefined){
-        user.communities.map(com =>{
+    if (user.communities != undefined) {
+        user.communities.map(com => {
             communities.push(com.id);
         });
     }
-    
+
     //HZUMAETA: Armo el campo con el arreglo de comunidades que corresponden
-    if(operation == "insert"){
+    if (operation == "insert") {
         communities.push(data.communityId);
-    }else{
+    } else {
         communities = communities.filter(valor => valor !== data.communityId);
     }
 
@@ -240,9 +240,9 @@ export const communityUpdate = async (userId: string, data: any) => {
         collection: 'users', // required
         id: userId, // required
         data: {
-          communities
+            communities
         },
-    })      
+    })
     return result;
 }
 export const humanAssignedToPet = async (humanId: string, petId: string) => {
@@ -251,22 +251,22 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
         collection: 'humans',
         id: humanId
     });
-    if (human){
+    if (human) {
         // const owns: any = human.pets;
         const pets = human.pets.map(pet => pet.id);
-        if (!pets.includes(petId)){
+        if (!pets.includes(petId)) {
             pets.push(petId);
             const result = await payload.update({
                 collection: 'humans', // required
                 id: humanId, // required
                 data: {
-                  pets
+                    pets
                 },
-            })   
+            })
         }
     }
     else {
         return null;
     }
-    return {"ok": "ok"};
+    return { "ok": "ok" };
 }

@@ -78,6 +78,7 @@ const Humans: CollectionConfig = {
       admin: {
         isClearable: true,
       },
+      defaultValue: "male",
       options: [
         {
           label: 'Male',
