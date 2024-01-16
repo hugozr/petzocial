@@ -9,13 +9,20 @@ const Options: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["name","order","redirect"]
+    defaultColumns: ["name","order","redirect", "rqlogIn"]
   },
   fields: [
     {
       name: 'name', // required
       type: 'text', // required
       required: true,
+    },
+    {
+      name: 'rqUserLoggedIn', // required
+      type: 'checkbox', // required
+      required: true,
+      defaultValue: false,
+      label: "It requires the user to be logged in"
     },
     {
       name: 'order', // required

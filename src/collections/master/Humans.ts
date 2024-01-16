@@ -12,7 +12,7 @@ const Humans: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["nickName","name","address","sex","comment","birthday"]
+    defaultColumns: ["nickName","name","address","gender","comment","birthday"]
   },
   endpoints: [
     {
@@ -72,7 +72,7 @@ const Humans: CollectionConfig = {
       type: 'text', // required
     },
     {
-      name: 'sex', // required
+      name: 'gender', // required
       type: 'select', // required
       hasMany: false,
       admin: {

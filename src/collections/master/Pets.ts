@@ -13,7 +13,7 @@ const Pets: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["name","specie","breed","sex","birthday","human"]
+    defaultColumns: ["name","specie","breed","gender","birthday","human"]
   },
   endpoints: [
     {
@@ -40,7 +40,7 @@ const Pets: CollectionConfig = {
       type: 'text', // required
     },
     {
-      name: 'sex', // required
+      name: 'gender', // required
       type: 'text', // required
     },
     {
