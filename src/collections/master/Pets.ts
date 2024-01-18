@@ -84,15 +84,14 @@ const Pets: CollectionConfig = {
       ],
     },
     {
-      name: 'petImage', // required
-      type: 'upload', // required
-      relationTo: 'media', // required
+      name: 'petImage',
+      type: 'upload', 
+      relationTo: 'media',
     },
     {
-      name: 'human', // required
-      type: 'group', // required
+      name: 'human', 
+      type: 'group', 
       fields: [
-        // required
         {
           name: 'name',
           type: 'text',

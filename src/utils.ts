@@ -1,4 +1,6 @@
 import payload from 'payload'
+const exceljs = require("exceljs");
+
 
 export const getHumansByEmail = async (email) => {
     const humans = await payload.find({
@@ -270,3 +272,39 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
     }
     return { "ok": "ok" };
 }
+
+export const downloadInExcel = async () => {
+    const workbook = new exceljs.Workbook();
+    const worksheet = workbook.addWorksheet("Hoja1");
+
+    const data: any = await payload.find({
+        collection: 'community-types',
+    })
+
+    const columns = getLabelsFromJSON(data.docs[0]);
+    worksheet.addRow(columns);
+    data.docs.map(obj => {
+        worksheet.addRow(getValuesByLabels(columns, obj));
+    })
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer
+}
+
+function getLabelsFromJSON(jsonData) {
+    if (typeof jsonData !== 'object') {
+      console.error('El argumento proporcionado no es un objeto JSON válido.');
+      return [];
+    }
+    const labels = Object.keys(jsonData);
+    return labels;
+  }
+
+  function getValuesByLabels(labels, jsonData) {
+    if (typeof jsonData !== 'object') {
+      console.error('El segundo argumento no es un objeto JSON válido.');
+      return [];
+    }
+    const values = labels.map(label => jsonData[label]);
+    return values;
+  }

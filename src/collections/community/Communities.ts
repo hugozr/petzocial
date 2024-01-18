@@ -26,21 +26,21 @@ const Communities: CollectionConfig = {
   ],
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'address', // required
-      type: 'text', // required
+      name: 'address',
+      type: 'text', 
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea',
     },
     {
-      name: 'url', // required
-      type: 'text', // required
+      name: 'url', 
+      type: 'text',
     },
     {
       name: 'coordinates', // required
@@ -64,13 +64,13 @@ const Communities: CollectionConfig = {
       ],
     },
     {
-      name: 'communityImage', // required
-      type: 'upload', // required
-      relationTo: 'media', // required
+      name: 'communityImage', 
+      type: 'upload', 
+      relationTo: 'media', 
     },
     {
-      name: 'modality', // required
-      type: 'select', // required
+      name: 'modality', 
+      type: 'select', 
       hasMany: false,
       defaultValue: 'public',
       options: [
@@ -85,9 +85,15 @@ const Communities: CollectionConfig = {
       ],
     },
     {
-      name: 'type', // required
-      type: 'relationship', // required
-      relationTo: 'community-types', // required
+      name: 'type', 
+      type: 'relationship', 
+      relationTo: 'community-types', 
+      hasMany: false,
+    },
+    {
+      name: 'creator', 
+      type: 'relationship', 
+      relationTo: 'users', 
       hasMany: false,
     },
   ],
