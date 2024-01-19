@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, communityUpdate, filterUsers, getUsers } from '../utils';
+import { associateHuman, communityUpdate, filterUsers, getUsersByEmail, getUsersByName } from '../utils';
 
 
 const Users: CollectionConfig = {
@@ -16,35 +16,35 @@ const Users: CollectionConfig = {
   },
   fields: [
     {
-      name: 'email', // required
-      type: 'text', // required
+      name: 'email', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'username', // required
-      type: 'text', // required
+      name: 'username', 
+      type: 'text', 
       required: true,
       unique: true
     },
     {
-      name: 'human', // required
-      type: 'relationship', // required
-      relationTo: 'humans', // required
+      name: 'human', 
+      type: 'relationship', 
+      relationTo: 'humans', 
       hasMany: false,
     },
     {
-      name: 'communities', // required
-      type: 'relationship', // required
-      relationTo: 'communities', // required
+      name: 'communities', 
+      type: 'relationship', 
+      relationTo: 'communities', 
       hasMany: true,
     },
    {
-      name: 'roles', // required
-      type: 'select', // required
+      name: 'roles', 
+      type: 'select', 
       hasMany: true,
       admin: {
         isClearable: true,
-        isSortable: true, // use mouse to drag and drop different values, and sort them according to your choice
+        isSortable: true, 
       },
       options: [
         {
@@ -79,7 +79,15 @@ const Users: CollectionConfig = {
       path: '/:username/users-by-name',
       method: 'get',
       handler: async (req, res, next) => {
-        const user = await getUsers(req.params.username); 
+        const user = await getUsersByName(req.params.username); 
+        res.status( 200 ).send(user)
+      },
+    },
+    {
+      path: '/:email/users-by-email',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const user = await getUsersByEmail(req.params.email); 
         res.status( 200 ).send(user)
       },
     },

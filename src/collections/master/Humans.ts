@@ -119,14 +119,14 @@ const Humans: CollectionConfig = {
       ],
     },
     {
-      name: 'humanImage', // required
-      type: 'upload', // required
-      relationTo: 'media', // required
+      name: 'humanImage', 
+      type: 'upload', 
+      relationTo: 'media', 
     },
     {
-      name: 'pets', // required
-      type: 'relationship', // required
-      relationTo: 'pets', // required
+      name: 'pets', 
+      type: 'relationship', 
+      relationTo: 'pets', 
       hasMany: true,
     },
   ],

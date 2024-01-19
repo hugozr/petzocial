@@ -45,21 +45,21 @@ const Vets: CollectionConfig = {
       type: 'text', // required
     },
     {
-      name: 'url', // required
-      type: 'text', // required
+      name: 'url', 
+      type: 'text', 
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'vetImage', // required
-      type: 'upload', // required
-      relationTo: 'media', // required
+      name: 'vetImage', 
+      type: 'upload', 
+      relationTo: 'media', 
     },
     {
-      name: 'coordinates', // required
-      type: 'group', // required
+      name: 'coordinates', 
+      type: 'group', 
       fields: [
         {
           name: 'x',
@@ -95,18 +95,18 @@ const Vets: CollectionConfig = {
           type: 'number',
         },
         {
-          name: 'healthService', // required
-          type: 'relationship', // required
-          relationTo: 'health-services', // required
+          name: 'healthService', 
+          type: 'relationship', 
+          relationTo: 'health-services', 
           hasMany: false,
         },
         
       ],
     },
     {
-      name: 'vetType', // required
-      type: 'relationship', // required
-      relationTo: 'vet-types', // required
+      name: 'vetType', 
+      type: 'relationship', 
+      relationTo: 'vet-types', 
       hasMany: false,
     }
   ],

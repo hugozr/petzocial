@@ -45,21 +45,21 @@ const Petshops: CollectionConfig = {
       type: 'text', // required
     },
     {
-      name: 'url', // required
-      type: 'text', // required
+      name: 'url', 
+      type: 'text', 
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'petshopImage', // required
-      type: 'upload', // required
-      relationTo: 'media', // required
+      name: 'petshopImage', 
+      type: 'upload', 
+      relationTo: 'media', 
     },
     {
-      name: 'coordinates', // required
-      type: 'group', // required
+      name: 'coordinates', 
+      type: 'group', 
       fields: [
         {
           name: 'x',
@@ -95,17 +95,17 @@ const Petshops: CollectionConfig = {
           type: 'number',
         },
         {
-          name: 'careService', // required
-          type: 'relationship', // required
-          relationTo: 'care-services', // required
+          name: 'careService', 
+          type: 'relationship', 
+          relationTo: 'care-services', 
           hasMany: false,
         },
       ],
     },
     {
-      name: 'petshopType', // required
-      type: 'relationship', // required
-      relationTo: 'petshop-types', // required
+      name: 'petshopType', 
+      type: 'relationship', 
+      relationTo: 'petshop-types', 
       hasMany: false,
     }
   ],

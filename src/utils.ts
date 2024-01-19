@@ -35,12 +35,23 @@ export const associateHuman = async (userId) => {
     }
     return returned
 }
-export const getUsers = async (username) => {
+export const getUsersByName = async (username) => {
     const users = await payload.find({
         collection: 'users',
         where: {
             username: {
                 equals: username,
+            },
+        },
+    });
+    return users;
+}
+export const getUsersByEmail = async (email) => {
+    const users = await payload.find({
+        collection: 'users',
+        where: {
+            email: {
+                equals: email,
             },
         },
     });

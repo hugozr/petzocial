@@ -96,6 +96,12 @@ const Communities: CollectionConfig = {
       relationTo: 'users', 
       hasMany: false,
     },
+    {
+      name: 'petMembers', 
+      type: 'relationship', 
+      relationTo: 'pets', 
+      hasMany: true,
+    },
   ],
 }
 
