@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets } from '../../utils';
+import { filterPets, filterPetsByHumanId } from '../../utils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',
@@ -21,6 +21,14 @@ const Pets: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const pets = await filterPets(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: "/by-human-id",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await filterPetsByHumanId(req.body);
         res.status( 200 ).send(pets);
       },
     },

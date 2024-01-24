@@ -82,9 +82,16 @@ export const filterPets = async (data: any) => {
             ]
         },
     });
-    console.log()
     return pets;
 }
+export const filterPetsByHumanId = async (data: any) => {
+    const human = await payload.findByID({
+        collection: 'humans',
+        id: data.id
+    });
+    return human.pets;
+}
+
 export const filterVets = async (data: any) => {
     const vets = await payload.find({
         collection: 'vets',
