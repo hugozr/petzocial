@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterCommunities } from '../../utils';
+import { filterCommunities, petUpdate } from '../../utils';
 
 const Communities: CollectionConfig = {
   slug: 'communities',
@@ -21,6 +21,14 @@ const Communities: CollectionConfig = {
       handler: async (req, res, next) => {
         const pets = await filterCommunities(req.body);
         res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: '/:communityId/pet-update',
+      method: "put",
+      handler: async (req, res, next) => {
+        const community = await petUpdate(req.params.communityId, req.body);
+        res.status( 200 ).send(community);
       },
     },
   ],

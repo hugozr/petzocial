@@ -92,6 +92,16 @@ export const filterPetsByHumanId = async (data: any) => {
     return human.pets;
 }
 
+export const filterPetsByCommunityId = async (data: any) => {
+    const community = await payload.findByID({
+        collection: 'communities',
+        id: data.id,
+        depth: 1,
+    });
+    return community;
+    //TODO: Me quedé en que debo poner como cabecera el nombre de la comunidad, creo que mejor consulto comunidades
+}
+
 export const filterVets = async (data: any) => {
     const vets = await payload.find({
         collection: 'vets',
@@ -265,6 +275,38 @@ export const communityUpdate = async (userId: string, data: any) => {
     })
     return result;
 }
+export const petUpdate = async (communityId: string, data: any) => {
+    console.log(communityId,"aaa");
+    const community: any = await payload.findByID({
+        collection: 'communities',
+        id: communityId
+    });
+    const operation = data.operation;
+    //HZUMAETA: Debo campturar los IDs
+    let petMembers = [];
+    if (community.petMembers != undefined) {
+        community.petMembers.map(pet => {
+            petMembers.push(pet.id);
+        });
+    }
+
+    //HZUMAETA: Armo el campo con el arreglo de comunidades que corresponden
+    if (operation == "insert") {
+        petMembers.push(data.petId);
+    } else {
+        petMembers = petMembers.filter(valor => valor !== data.petId);
+    }
+
+    const result = await payload.update({
+        collection: 'communities',
+        id: communityId, // required
+        data: {
+            petMembers
+        },
+    })
+    return result;
+}
+
 export const humanAssignedToPet = async (humanId: string, petId: string) => {
 
     const human: any = await payload.findByID({

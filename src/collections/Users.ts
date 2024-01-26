@@ -99,7 +99,6 @@ const Users: CollectionConfig = {
         res.status( 200 ).send(users);
       },
     },
-    
     {
       path: '/:userId/community-update',
       method: "put",
