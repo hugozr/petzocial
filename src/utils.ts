@@ -26,8 +26,8 @@ export const associateHuman = async (userId) => {
     let returned = null;
     if (humans.length > 0) {
         returned = await payload.update({
-            collection: 'users', // required
-            id: userId, // required
+            collection: 'users', 
+            id: userId, 
             data: {
                 human: humans[0].id,
             }
@@ -267,8 +267,8 @@ export const communityUpdate = async (userId: string, data: any) => {
     }
 
     const result = await payload.update({
-        collection: 'users', // required
-        id: userId, // required
+        collection: 'users', 
+        id: userId, 
         data: {
             communities
         },
@@ -276,7 +276,6 @@ export const communityUpdate = async (userId: string, data: any) => {
     return result;
 }
 export const petUpdate = async (communityId: string, data: any) => {
-    console.log(communityId,"aaa");
     const community: any = await payload.findByID({
         collection: 'communities',
         id: communityId
@@ -299,7 +298,7 @@ export const petUpdate = async (communityId: string, data: any) => {
 
     const result = await payload.update({
         collection: 'communities',
-        id: communityId, // required
+        id: communityId, 
         data: {
             petMembers
         },
@@ -314,13 +313,12 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
         id: humanId
     });
     if (human) {
-        // const owns: any = human.pets;
         const pets = human.pets.map(pet => pet.id);
         if (!pets.includes(petId)) {
             pets.push(petId);
             const result = await payload.update({
-                collection: 'humans', // required
-                id: humanId, // required
+                collection: 'humans', 
+                id: humanId, 
                 data: {
                     pets
                 },

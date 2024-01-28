@@ -42,8 +42,8 @@ const Humans: CollectionConfig = {
   ],
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {

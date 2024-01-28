@@ -32,43 +32,43 @@ const Pets: CollectionConfig = {
         res.status( 200 ).send(pets);
       },
     },
-    {
-      path: "/by-community-id",
-      method: "put",
-      handler: async (req, res, next) => {
-        const pets = await filterPetsByCommunityId(req.body);
-        res.status( 200 ).send(pets);
-      },
-    },
+    // {
+    //   path: "/by-community-id",
+    //   method: "put",
+    //   handler: async (req, res, next) => {
+    //     const pets = await filterPetsByCommunityId(req.body);
+    //     res.status( 200 ).send(pets);
+    //   },
+    // },
   ],
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'address', // required
-      type: 'text', // required
+      name: 'address', 
+      type: 'text', 
     },
     {
-      name: 'gender', // required
-      type: 'text', // required
+      name: 'gender', 
+      type: 'text', 
     },
     {
-      name: 'birthday', // required
-      type: 'date', // required
+      name: 'birthday', 
+      type: 'date', 
     },
     {
-      name: 'specie', // required
-      type: 'group', // required
-      interfaceName: 'Specie', // optional
+      name: 'specie', 
+      type: 'group', 
+      interfaceName: 'Specie', 
       fields: [
-        // required
+        
         {
           name: 'specieId',
           type: 'text',
@@ -82,11 +82,10 @@ const Pets: CollectionConfig = {
       ],
     },
     {
-      name: 'breed', // required
-      type: 'group', // required
-      interfaceName: 'Breed', // optional
+      name: 'breed', 
+      type: 'group', 
+      interfaceName: 'Breed', 
       fields: [
-        // required
         {
           name: 'breedId',
           type: 'text',
@@ -114,6 +113,10 @@ const Pets: CollectionConfig = {
         },
         {
           name: 'humanId',
+          type: 'text',
+        },
+        {
+          name: 'email',
           type: 'text',
         },
       ],

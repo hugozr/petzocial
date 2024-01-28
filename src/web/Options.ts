@@ -13,25 +13,25 @@ const Options: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'rqUserLoggedIn', // required
-      type: 'checkbox', // required
+      name: 'rqUserLoggedIn', 
+      type: 'checkbox', 
       required: true,
       defaultValue: false,
       label: "It requires the user to be logged in"
     },
     {
-      name: 'order', // required
-      type: 'number', // required
+      name: 'order', 
+      type: 'number', 
       required: true,
     },
     {
-      name: 'redirect', // required
-      type: 'text', // required
+      name: 'redirect', 
+      type: 'text', 
       required: true,
     },
   ],
