@@ -246,10 +246,12 @@ export const filterUsers = async (data: any) => {
 }
 export const communityUpdate = async (userId: string, data: any) => {
     //HZUMAETA: Recibe en el body {"operation": "insert" || "delete", "communityId": communityId}
+    console.log(userId,data,"jjjjjjjjjjjjjjjjjjjj");
     const user: any = await payload.findByID({
         collection: 'users',
         id: userId
     });
+
     const operation = data.operation;
     //HZUMAETA: Debo campturar los IDs
     let communities = [];
@@ -258,19 +260,20 @@ export const communityUpdate = async (userId: string, data: any) => {
             communities.push(com.id);
         });
     }
-
     //HZUMAETA: Armo el campo con el arreglo de comunidades que corresponden
     if (operation == "insert") {
         communities.push(data.communityId);
     } else {
         communities = communities.filter(valor => valor !== data.communityId);
     }
+    //HZUMAETA: Elimino los undefined, en caso se haya eliminado la comunidad
+    communities = communities.filter(element => element !== undefined);
 
     const result = await payload.update({
         collection: 'users', 
         id: userId, 
         data: {
-            communities
+            communities: communities
         },
     })
     return result;

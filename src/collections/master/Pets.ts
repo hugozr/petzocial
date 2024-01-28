@@ -32,14 +32,6 @@ const Pets: CollectionConfig = {
         res.status( 200 ).send(pets);
       },
     },
-    // {
-    //   path: "/by-community-id",
-    //   method: "put",
-    //   handler: async (req, res, next) => {
-    //     const pets = await filterPetsByCommunityId(req.body);
-    //     res.status( 200 ).send(pets);
-    //   },
-    // },
   ],
   fields: [
     {
