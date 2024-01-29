@@ -15,17 +15,17 @@ const HealthServices: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'order', // required
-      type: 'number', // required
+      name: 'order', 
+      type: 'number', 
     },
    
   ],

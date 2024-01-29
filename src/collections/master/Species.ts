@@ -15,17 +15,17 @@ const Species: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'order', // required
-      type: 'number', // required
+      name: 'order', 
+      type: 'number', 
     },
     {
       name: 'image',
@@ -34,8 +34,8 @@ const Species: CollectionConfig = {
       required: true,
     },
     {
-      name: 'breeds', // required
-      type: 'array', // required
+      name: 'breeds', 
+      type: 'array', 
       label: 'Breeds',
       interfaceName: 'Breeds', // optional
       labels: {
@@ -43,7 +43,7 @@ const Species: CollectionConfig = {
         plural: 'Breeds',
       },
       fields: [
-        // required
+        
         {
           name: 'name',
           type: 'text',

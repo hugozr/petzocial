@@ -26,23 +26,23 @@ const Vets: CollectionConfig = {
   ],
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'phone', // required
-      type: 'text', // required
+      name: 'phone', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'email', // required
-      type: 'email', // required
+      name: 'email', 
+      type: 'email', 
       required: true,
     },
     {
-      name: 'address', // required
-      type: 'text', // required
+      name: 'address', 
+      type: 'text', 
     },
     {
       name: 'url', 
@@ -78,8 +78,8 @@ const Vets: CollectionConfig = {
       ],
     },
     {
-      name: 'healthServices', // required
-      type: 'array', // required
+      name: 'healthServices', 
+      type: 'array', 
       label: 'HealthServices',
       labels: {
         singular: 'HealthService',

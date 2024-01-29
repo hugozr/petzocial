@@ -47,33 +47,33 @@ const Humans: CollectionConfig = {
       required: true,
     },
     {
-      name: 'nickName', // required
-      type: 'text', // required
+      name: 'nickName', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'address', // required
-      type: 'text', // required
+      name: 'address', 
+      type: 'text', 
     },
     {
-      name: 'email', // required
-      type: 'text', // required
+      name: 'email', 
+      type: 'text', 
     },
     {
-      name: 'phone', // required
-      type: 'text', // required
+      name: 'phone', 
+      type: 'text', 
     },
     {
-      name: 'socialUrl', // required
-      type: 'text', // required
+      name: 'socialUrl', 
+      type: 'text', 
     },
     {
-      name: 'gender', // required
-      type: 'select', // required
+      name: 'gender', 
+      type: 'select', 
       hasMany: false,
       admin: {
         isClearable: true,
@@ -95,12 +95,12 @@ const Humans: CollectionConfig = {
       ],
     },
     {
-      name: 'birthday', // required
-      type: 'date', // required
+      name: 'birthday', 
+      type: 'date', 
     },
     {
-      name: 'coordinates', // required
-      type: 'group', // required
+      name: 'coordinates', 
+      type: 'group', 
       fields: [
         {
           name: 'x',

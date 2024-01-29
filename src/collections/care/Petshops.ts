@@ -26,23 +26,23 @@ const Petshops: CollectionConfig = {
   ],
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'phone', // required
-      type: 'text', // required
+      name: 'phone', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'email', // required
-      type: 'email', // required
+      name: 'email', 
+      type: 'email', 
       required: true,
     },
     {
-      name: 'address', // required
-      type: 'text', // required
+      name: 'address', 
+      type: 'text', 
     },
     {
       name: 'url', 
@@ -78,8 +78,8 @@ const Petshops: CollectionConfig = {
       ],
     },
     {
-      name: 'careServices', // required
-      type: 'array', // required
+      name: 'careServices', 
+      type: 'array', 
       label: 'CareServices',
       labels: {
         singular: 'CareService',

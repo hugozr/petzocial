@@ -310,11 +310,11 @@ export const petUpdate = async (communityId: string, data: any) => {
 }
 
 export const humanAssignedToPet = async (humanId: string, petId: string) => {
-
     const human: any = await payload.findByID({
         collection: 'humans',
         id: humanId
     });
+
     if (human) {
         const pets = human.pets.map(pet => pet.id);
         if (!pets.includes(petId)) {

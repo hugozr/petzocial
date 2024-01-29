@@ -15,13 +15,13 @@ const VetTypes: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
   ],
 }

@@ -16,21 +16,21 @@ const CommunityTypes: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name', // required
-      type: 'text', // required
+      name: 'name', 
+      type: 'text', 
       required: true,
     },
     {
-      name: 'comment', // required
-      type: 'textarea', // required
+      name: 'comment', 
+      type: 'textarea', 
     },
     {
-      name: 'disable', // required
-      type: 'checkbox', // required
+      name: 'disable', 
+      type: 'checkbox', 
       defaultValue: false,
     },
     {
-      name: 'modality', // required
+      name: 'modality', 
       type: 'select', 
       hasMany: false,
       defaultValue: 'public',
