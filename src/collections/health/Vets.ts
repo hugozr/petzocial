@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterVets } from '../../utils';
+import { filterVets, genericDownloadExcel } from '../../utils';
 
 const Vets: CollectionConfig = {
   slug: 'vets',
@@ -23,7 +23,18 @@ const Vets: CollectionConfig = {
         res.status( 200 ).send(pets);
       },
     },
+    {
+      path: '/download-in-excel',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const dataExcel = await genericDownloadExcel("vets", "vets"); //Si es nulo no se ha podido asociar
+        res.set('Content-Disposition', 'attachment; filename=vets.xlsx');
+        res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.status( 200 ).send(dataExcel);
+      },
+    },
   ],
+    
   fields: [
     {
       name: 'name', 
@@ -110,5 +121,6 @@ const Vets: CollectionConfig = {
       hasMany: false,
     }
   ],
+  
 }
 export default Vets

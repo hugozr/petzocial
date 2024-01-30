@@ -341,13 +341,27 @@ export const downloadInExcel = async () => {
     const data: any = await payload.find({
         collection: 'community-types',
     })
-
     const columns = getLabelsFromJSON(data.docs[0]);
     worksheet.addRow(columns);
     data.docs.map(obj => {
         worksheet.addRow(getValuesByLabels(columns, obj));
     })
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer
+}
 
+export const genericDownloadExcel = async (slug: string, sheetName: string) => {
+    const workbook = new exceljs.Workbook();
+    const worksheet = workbook.addWorksheet(sheetName);
+
+    const data: any = await payload.find({
+        collection: slug,
+    })
+    const columns = getLabelsFromJSON(data.docs[0]);
+    worksheet.addRow(columns);
+    data.docs.map(obj => {
+        worksheet.addRow(getValuesByLabels(columns, obj));
+    })
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer
 }
