@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, communityUpdate, filterUsers, getUsersByEmail, getUsersByName } from '../utils';
+import { associateHuman, communityUpdate, filterUsers, genericDownloadExcel, getUsersByEmail, getUsersByName } from '../utils';
 
 
 const Users: CollectionConfig = {
@@ -105,6 +105,15 @@ const Users: CollectionConfig = {
       handler: async (req, res, next) => {
         const users = await communityUpdate(req.params.userId, req.body);
         res.status( 200 ).send(users);
+      },
+    },
+    {
+      path: '/download-in-excel',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const dataExcel = await genericDownloadExcel("users", "users"); 
+        res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.status( 200 ).send(dataExcel);
       },
     },
   ],

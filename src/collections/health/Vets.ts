@@ -27,8 +27,7 @@ const Vets: CollectionConfig = {
       path: '/download-in-excel',
       method: 'get',
       handler: async (req, res, next) => {
-        const dataExcel = await genericDownloadExcel("vets", "vets"); //Si es nulo no se ha podido asociar
-        res.set('Content-Disposition', 'attachment; filename=vets.xlsx');
+        const dataExcel = await genericDownloadExcel("vets", "vets"); 
         res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.status( 200 ).send(dataExcel);
       },

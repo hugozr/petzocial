@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByCommunityId, filterPetsByHumanId } from '../../utils';
+import { filterPets, filterPetsByCommunityId, filterPetsByHumanId, genericDownloadExcel } from '../../utils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',
@@ -30,6 +30,15 @@ const Pets: CollectionConfig = {
       handler: async (req, res, next) => {
         const pets = await filterPetsByHumanId(req.body);
         res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: '/download-in-excel',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const dataExcel = await genericDownloadExcel("pets", "pets"); 
+        res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.status( 200 ).send(dataExcel);
       },
     },
   ],
