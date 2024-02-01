@@ -27,6 +27,10 @@ const Users: CollectionConfig = {
       unique: true
     },
     {
+      name: 'keycloakUserId', 
+      type: 'text', 
+    },
+    {
       name: 'human', 
       type: 'relationship', 
       relationTo: 'humans', 
