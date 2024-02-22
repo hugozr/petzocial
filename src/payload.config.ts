@@ -21,6 +21,7 @@ import Petshops from "./collections/care/Petshops";
 import PetshopTypes from "./collections/care/PetshopTypes";
 import { Media } from "./web/Media";
 import Options from "./web/Options";
+import { ExcelFile } from "./web/ExcelFile";
 
 export default buildConfig({
   admin: {
@@ -43,6 +44,7 @@ export default buildConfig({
     Petshops,
     CareServices,
     Media,
+    ExcelFile,
     Humans,
     CommunityTypes,
     Communities,
