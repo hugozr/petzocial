@@ -19,6 +19,10 @@ export const ExcelFile: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'type',
+      type: 'text',
+    },
+    {
       name: 'username',
       type: 'text',
     },

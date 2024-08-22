@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByCommunityId, filterPetsByHumanId, genericDownloadExcel } from '../../utils';
+import { filterPets, filterPetsByHumanId, genericDownloadExcel, petLike } from '../../utils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',
@@ -39,6 +39,14 @@ const Pets: CollectionConfig = {
         const dataExcel = await genericDownloadExcel("pets", "pets"); 
         res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.status( 200 ).send(dataExcel);
+      },
+    },
+    {
+      path: '/like',
+      method: 'post',
+      handler: async (req, res, next) => {
+        const pets = await petLike(req.body);
+        res.status( 200 ).send(pets);
       },
     },
   ],

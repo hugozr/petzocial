@@ -15,7 +15,7 @@ export const getHumansByEmail = async (email) => {
 }
 const getUserById = async (id) => {
     const user = await payload.findByID({
-        collection: 'users',
+        collection: 'app-users',
         id
     });
     return user;
@@ -26,7 +26,7 @@ export const associateHuman = async (userId) => {
     let returned = null;
     if (humans.length > 0) {
         returned = await payload.update({
-            collection: 'users', 
+            collection: 'app-users', 
             id: userId, 
             data: {
                 human: humans[0].id,
@@ -36,8 +36,9 @@ export const associateHuman = async (userId) => {
     return returned
 }
 export const getUsersByName = async (username) => {
+    
     const users = await payload.find({
-        collection: 'users',
+        collection: 'app-users',
         where: {
             username: {
                 equals: username,
@@ -48,7 +49,7 @@ export const getUsersByName = async (username) => {
 }
 export const getUsersByEmail = async (email) => {
     const users = await payload.find({
-        collection: 'users',
+        collection: 'app-users',
         where: {
             email: {
                 equals: email,
@@ -90,6 +91,9 @@ export const filterPetsByHumanId = async (data: any) => {
         id: data.id
     });
     return human.pets;
+}
+export const petLike = async (data: any) => {
+    return {"like": "ok"};
 }
 
 export const filterPetsByCommunityId = async (data: any) => {
@@ -169,21 +173,6 @@ export const filterHumans = async (data: any) => {
                         like: data.filter,
                     },
                 },
-                // {
-                //     phone: {
-                //         like: data.filter,
-                //     },
-                // },
-                // {
-                //     email: {
-                //         like: data.filter,
-                //     },
-                // },
-                // {
-                //     address: {
-                //         like: data.filter,
-                //     },
-                // },
             ]
         },
     });
@@ -219,7 +208,7 @@ export const filterCommunities = async (data: any) => {
 }
 export const filterUsers = async (data: any) => {
     const communities = await payload.find({
-        collection: 'users',
+        collection: 'app-users',
         page: data.page,
         limit: data.limit,
         where: {
@@ -246,9 +235,8 @@ export const filterUsers = async (data: any) => {
 }
 export const communityUpdate = async (userId: string, data: any) => {
     //HZUMAETA: Recibe en el body {"operation": "insert" || "delete", "communityId": communityId}
-    console.log(userId,data,"jjjjjjjjjjjjjjjjjjjj");
     const user: any = await payload.findByID({
-        collection: 'users',
+        collection: 'app-users',
         id: userId
     });
 
@@ -270,7 +258,7 @@ export const communityUpdate = async (userId: string, data: any) => {
     communities = communities.filter(element => element !== undefined);
 
     const result = await payload.update({
-        collection: 'users', 
+        collection: 'app-users', 
         id: userId, 
         data: {
             communities: communities
@@ -310,20 +298,23 @@ export const petUpdate = async (communityId: string, data: any) => {
 }
 
 export const humanAssignedToPet = async (humanId: string, petId: string) => {
+
+    //HZUMAETA: Verifico que el humano exista. Si existe obtengo el arreglo de las mascotas que tiene
     const human: any = await payload.findByID({
         collection: 'humans',
         id: humanId
     });
 
     if (human) {
-        const pets = human.pets.map(pet => pet.id);
-        if (!pets.includes(petId)) {
-            pets.push(petId);
+        let petIds: any = human.pets.map(pet => pet.id);
+        if(!petIds) petIds = [];
+        if (!petIds.includes(petId)) {
+            petIds.push(petId);
             const result = await payload.update({
                 collection: 'humans', 
                 id: humanId, 
                 data: {
-                    pets
+                    pets: petIds
                 },
             })
         }
@@ -349,6 +340,36 @@ export const downloadInExcel = async () => {
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer
 }
+
+export const syncronizeToApUser = async (keycloakData: any) => {
+    // keycloakData:
+    // {
+    //     keycloakUserId: '6d2419da-30e8-449e-8408-9e155c0893af',
+    //     keycloakUserName: 'pp',
+    //     keycloakEmail: 'pp@a.com'
+    //   }
+    const users = await payload.find({
+        collection: 'app-users',
+        where: {
+            keycloakUserId: {
+                equals: keycloakData.keycloakUserId,
+            },
+        },
+    });
+    if(users.totalDocs == 0) {
+        const user = await payload.create({
+            collection: "app-users",
+            data: {
+                username: keycloakData.keycloakUserName,
+                email: keycloakData.keycloakEmail,
+                keycloakUserId: keycloakData.keycloakUserId,
+            }
+        })
+        return user;
+    }
+    return users.docs[0];
+}
+
 
 export const genericDownloadExcel = async (slug: string, sheetName: string) => {
     const workbook = new exceljs.Workbook();

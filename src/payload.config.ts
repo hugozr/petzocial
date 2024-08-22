@@ -22,6 +22,7 @@ import PetshopTypes from "./collections/care/PetshopTypes";
 import { Media } from "./web/Media";
 import Options from "./web/Options";
 import { ExcelFile } from "./web/ExcelFile";
+import AppUsers from "./collections/appUsers/AppUsers";
 
 export default buildConfig({
   admin: {
@@ -49,6 +50,7 @@ export default buildConfig({
     CommunityTypes,
     Communities,
     Options,
+    AppUsers,
     Users,
   ],
   globals:[
