@@ -23,6 +23,7 @@ import { Media } from "./web/Media";
 import Options from "./web/Options";
 import { ExcelFile } from "./web/ExcelFile";
 import AppUsers from "./collections/appUsers/AppUsers";
+import Settings from "./globals/Settinga";
 
 export default buildConfig({
   admin: {
@@ -54,7 +55,8 @@ export default buildConfig({
     Users,
   ],
   globals:[
-    Welcome
+    Welcome,
+    Settings
   ],
 
   cors: "*", //HZUMAETA: Si no lo pongom tendré problemas de cors en el cliente
