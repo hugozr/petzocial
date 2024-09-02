@@ -110,6 +110,10 @@ const Communities: CollectionConfig = {
       relationTo: 'pets', 
       hasMany: true,
     },
+    {
+      name: 'kcUserName', 
+      type: 'text', 
+    },
   ],
 }
 

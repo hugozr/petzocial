@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types';
 import { associateHuman, communityUpdate, filterUsers, genericDownloadExcel, getUsersByEmail, getUsersByName, syncronizeToApUser } from '../../utils';
+import { assignGroups } from '../../securityUtils';
 
 
 const AppUsers: CollectionConfig = {
@@ -124,8 +125,16 @@ const AppUsers: CollectionConfig = {
       path: '/sync-to-app-user',
       method: 'post',
       handler: async (req, res, next) => {
-        const dataExcel = await syncronizeToApUser(req.body); 
-        res.status( 200 ).send(dataExcel);
+        const user = await syncronizeToApUser(req.body); 
+        res.status( 200 ).send(user);
+      },
+    },
+    {
+      path: '/:kcUserId/assign-groups',
+      method: 'post',
+      handler: async (req, res, next) => {
+        const user = await assignGroups(req.params.kcUserId, req.body); 
+        res.status( 200 ).send(user);
       },
     },
   ],

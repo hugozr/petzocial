@@ -118,7 +118,11 @@ const Vets: CollectionConfig = {
       type: 'relationship', 
       relationTo: 'vet-types', 
       hasMany: false,
-    }
+    },
+    {
+      name: 'kcUserName', 
+      type: 'text', 
+    },
   ],
   
 }
