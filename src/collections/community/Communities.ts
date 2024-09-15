@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterCommunities, petUpdate } from '../../utils';
+import { filterCommunities, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
 
 const Communities: CollectionConfig = {
   slug: 'communities',
@@ -29,6 +29,14 @@ const Communities: CollectionConfig = {
       handler: async (req, res, next) => {
         const community = await petUpdate(req.params.communityId, req.body);
         res.status( 200 ).send(community);
+      },
+    },
+    {
+      path: '/:username/by-username',
+      method: "get",
+      handler: async (req, res, next) => {
+        const communities = await retrieveCommunitiesByUsername(req.params.username);
+        res.status( 200 ).send(communities);
       },
     },
   ],
@@ -98,12 +106,12 @@ const Communities: CollectionConfig = {
       relationTo: 'community-types', 
       hasMany: false,
     },
-    {
-      name: 'creator', 
-      type: 'relationship', 
-      relationTo: 'users', 
-      hasMany: false,
-    },
+    // {
+    //   name: 'creator', 
+    //   type: 'relationship', 
+    //   relationTo: 'app-users', 
+    //   hasMany: false,
+    // },
     {
       name: 'petMembers', 
       type: 'relationship', 

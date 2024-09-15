@@ -5,6 +5,7 @@ const exceljs = require("exceljs");
 export const getHumansByEmail = async (email) => {
     const humans = await payload.find({
         collection: 'humans',
+        depth: 1,
         where: {
             email: {
                 equals: email,
@@ -266,6 +267,22 @@ export const communityUpdate = async (userId: string, data: any) => {
     })
     return result;
 }
+
+export const retrieveCommunitiesByUsername = async (username: string) => {
+    const communities: any = await payload.find({
+        collection: 'communities',
+        depth: 0,
+        where: {
+            kcUserName: {
+                equals: username,
+            },
+        },
+        }
+    );
+    return communities;
+}
+
+
 export const petUpdate = async (communityId: string, data: any) => {
     const community: any = await payload.findByID({
         collection: 'communities',
