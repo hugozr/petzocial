@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByHumanId, genericDownloadExcel, petLike } from '../../utils';
+import { filterPets, filterPetsByHumanId, filterPetsByZone, genericDownloadExcel, petLike } from '../../utils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',
@@ -21,6 +21,14 @@ const Pets: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const pets = await filterPets(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: "/filter-me-by-zone",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await filterPetsByZone(req.body);
         res.status( 200 ).send(pets);
       },
     },
@@ -59,6 +67,12 @@ const Pets: CollectionConfig = {
     {
       name: 'comment', 
       type: 'textarea', 
+    },
+    {
+      name: 'zone', 
+      type: 'relationship', 
+      relationTo: 'zones', 
+      hasMany: false,
     },
     {
       name: 'address', 

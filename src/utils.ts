@@ -59,6 +59,41 @@ export const getUsersByEmail = async (email) => {
     });
     return users;
 }
+export const filterPetsByZone = async (data: any) => {
+    console.log("aaaaaaaaaa");
+    const pets = await payload.find({
+        collection: 'pets',
+        page: data.page,
+        limit: data.limit,
+        where: {
+            or: [
+                {
+                    name: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    comment: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    "human.name": {
+                        like: data.filter,
+                    },
+                },
+            ],
+            and: [
+                {
+                    zone: {
+                        equals: data.zone
+                    }
+                }
+            ]
+        },
+    });
+    return pets;
+}
 export const filterPets = async (data: any) => {
     const pets = await payload.find({
         collection: 'pets',
@@ -81,7 +116,7 @@ export const filterPets = async (data: any) => {
                         like: data.filter,
                     },
                 },
-            ]
+            ],
         },
     });
     return pets;

@@ -24,6 +24,7 @@ import Options from "./web/Options";
 import { ExcelFile } from "./web/ExcelFile";
 import AppUsers from "./collections/appUsers/AppUsers";
 import Settings from "./globals/Settinga";
+import Zones from "./collections/master/Zonez";
 
 export default buildConfig({
   admin: {
@@ -37,6 +38,7 @@ export default buildConfig({
     },
   },
   collections: [
+    Zones,
     Species,
     Pets,
     VetTypes,
