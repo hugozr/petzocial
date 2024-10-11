@@ -23,6 +23,11 @@ const VetTypes: CollectionConfig = {
       name: 'comment', 
       type: 'textarea', 
     },
+    {
+      name: 'displayedOnMobileDevices', 
+      type: 'checkbox', 
+    },
+    
   ],
 }
 

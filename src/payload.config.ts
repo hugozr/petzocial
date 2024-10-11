@@ -23,8 +23,9 @@ import { Media } from "./web/Media";
 import Options from "./web/Options";
 import { ExcelFile } from "./web/ExcelFile";
 import AppUsers from "./collections/appUsers/AppUsers";
-import Settings from "./globals/Settinga";
-import Zones from "./collections/master/Zonez";
+import Settings from "./globals/Settings";
+import Zones from "./collections/master/Zones";
+import Places from "./collections/master/Places";
 
 export default buildConfig({
   admin: {
@@ -55,6 +56,7 @@ export default buildConfig({
     Options,
     AppUsers,
     Users,
+    Places
   ],
   globals:[
     Welcome,

@@ -394,7 +394,7 @@ export const downloadInExcel = async () => {
 }
 
 export const syncronizeToApUser = async (keycloakData: any) => {
-    
+    let createdUser = false;     
     // console.log("parece que no viene unsername",keycloakData);
     const users = await payload.find({
         collection: 'app-users',
@@ -404,7 +404,6 @@ export const syncronizeToApUser = async (keycloakData: any) => {
             },
         },
     });
-    // console.log("entra a crear?", users.totalDocs);
     if(users.totalDocs == 0) {
         const user = await payload.create({
             collection: "app-users",
@@ -414,8 +413,10 @@ export const syncronizeToApUser = async (keycloakData: any) => {
                 keycloakUserId: keycloakData.keycloakUserId,
             }
         })
+        user.created = true;
         return user;
     }
+    users.docs[0].created = createdUser;
     return users.docs[0];
 }
 

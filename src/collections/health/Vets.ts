@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import { filterVets, genericDownloadExcel } from '../../utils';
+import { createPlace } from '../../geoUtils';
 
 const Vets: CollectionConfig = {
   slug: 'vets',
@@ -13,6 +14,22 @@ const Vets: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ["name","phone", "address","email", "url"]
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, previousDoc }) => {
+        if (operation === 'create') {
+          const place = await createPlace(doc);
+          console.log(place);
+        }
+        // if (operation === 'update') {
+        //   console.log('Un documento fue modificado:', doc);
+        //   const place = await createPlace(doc);
+        //   console.log(place);
+        // }
+        console.log('Documento anterior:', previousDoc);
+      }
+    ],
   },
   endpoints: [
     {
@@ -122,6 +139,12 @@ const Vets: CollectionConfig = {
     {
       name: 'kcUserName', 
       type: 'text', 
+    },
+    {
+      name: 'place', 
+      type: 'relationship', 
+      relationTo: 'places', 
+      hasMany: false,
     },
   ],
   
