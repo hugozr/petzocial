@@ -1,6 +1,7 @@
 import { CollectionConfig } from 'payload/types'
 import { filterVets, genericDownloadExcel } from '../../utils';
 import { createPlace } from '../../geoUtils';
+import { text } from 'express';
 
 const Vets: CollectionConfig = {
   slug: 'vets',
@@ -129,6 +130,10 @@ const Vets: CollectionConfig = {
         },
         
       ],
+    },
+    {
+      name: 'openingHours',
+      type: 'text'
     },
     {
       name: 'vetType', 
