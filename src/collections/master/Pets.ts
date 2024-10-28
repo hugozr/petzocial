@@ -1,6 +1,7 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByHumanId, filterPetsByZone, genericDownloadExcel, petLike } from '../../utils';
+import { filterPets, filterPetsByHumanId, filterPetsByZone, petLike } from '../../utils';
+import { genericDownloadExcel } from '../../excelUtils';
 
 const Pets: CollectionConfig = {
   slug: 'pets',

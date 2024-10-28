@@ -1,5 +1,5 @@
 import payload from 'payload'
-const exceljs = require("exceljs");
+// const exceljs = require("exceljs");
 
 
 export const getHumansByEmail = async (email) => {
@@ -377,21 +377,6 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
     return { "ok": "ok" };
 }
 
-export const downloadInExcel = async () => {
-    const workbook = new exceljs.Workbook();
-    const worksheet = workbook.addWorksheet("Hoja1");
-
-    const data: any = await payload.find({
-        collection: 'community-types',
-    })
-    const columns = getLabelsFromJSON(data.docs[0]);
-    worksheet.addRow(columns);
-    data.docs.map(obj => {
-        worksheet.addRow(getValuesByLabels(columns, obj));
-    })
-    const buffer = await workbook.xlsx.writeBuffer();
-    return buffer
-}
 
 export const syncronizeToApUser = async (keycloakData: any) => {
     let createdUser = false;     
@@ -421,36 +406,10 @@ export const syncronizeToApUser = async (keycloakData: any) => {
 }
 
 
-export const genericDownloadExcel = async (slug: string, sheetName: string) => {
-    const workbook = new exceljs.Workbook();
-    const worksheet = workbook.addWorksheet(sheetName);
-
-    const data: any = await payload.find({
-        collection: slug,
-    })
-    const columns = getLabelsFromJSON(data.docs[0]);
-    worksheet.addRow(columns);
-    data.docs.map(obj => {
-        worksheet.addRow(getValuesByLabels(columns, obj));
-    })
-    const buffer = await workbook.xlsx.writeBuffer();
-    return buffer
+export function generatePrefixFileName(id, user) {
+    const date = new Date();
+    const yyyymmdd = date.toISOString().slice(0, 10).replace(/-/g, "");
+    const hhmmss = date.toTimeString().slice(0, 8).replace(/:/g, "");
+    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+    return `${id}-${user}-${yyyymmdd}-${hhmmss}-${randomNumber}`;
 }
-
-function getLabelsFromJSON(jsonData) {
-    if (typeof jsonData !== 'object') {
-      console.error('El argumento proporcionado no es un objeto JSON válido.');
-      return [];
-    }
-    const labels = Object.keys(jsonData);
-    return labels;
-  }
-
-  function getValuesByLabels(labels, jsonData) {
-    if (typeof jsonData !== 'object') {
-      console.error('El segundo argumento no es un objeto JSON válido.');
-      return [];
-    }
-    const values = labels.map(label => jsonData[label]);
-    return values;
-  }

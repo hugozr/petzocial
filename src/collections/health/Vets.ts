@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types'
-import { filterVets, genericDownloadExcel } from '../../utils';
+import { genericDownloadExcel } from '../../excelUtils';
+import { filterVets } from '../../utils';
 import { createPlace } from '../../geoUtils';
 import { text } from 'express';
 

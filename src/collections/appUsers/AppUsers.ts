@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, communityUpdate, filterUsers, genericDownloadExcel, getUsersByEmail, getUsersByName, syncronizeToApUser } from '../../utils';
+import { genericDownloadExcel} from '../../excelUtils';
+import { associateHuman, communityUpdate, filterUsers, getUsersByEmail, getUsersByName, syncronizeToApUser } from '../../utils';
 import { assignGroups } from '../../securityUtils';
 
 

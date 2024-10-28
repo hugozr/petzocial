@@ -15,12 +15,12 @@ export const assignGroups = async (kcUserId: string, dataGroup: any) => {
     forUpdate.notYetAssigned.forEach(async (id: any) => {
         const addGroupURL = `${process.env.KEYCLOAK_HOST}/admin/realms/${process.env.REALM_NAME}/users/${kcUserId}/groups/${id}`;
         console.log(addGroupURL);
-        const addedGroup =  await operationAuth(addGroupURL,"PUT",authHeader);
+        const addedGroup = await operationAuth(addGroupURL, "PUT", authHeader);
     });
     forUpdate.toDeleteAssignment.forEach(async (id: any) => {
         const delGroupURL = `${process.env.KEYCLOAK_HOST}/admin/realms/${process.env.REALM_NAME}/users/${kcUserId}/groups/${id}`;
         console.log(delGroupURL);
-        const deletedGroup =  await operationAuth(delGroupURL,"DELETE",authHeader);
+        const deletedGroup = await operationAuth(delGroupURL, "DELETE", authHeader);
     });
     return { forUpdate };
 }
@@ -40,6 +40,38 @@ export const getAccessTokens = async () => {
     return tokens;
 }
 
+export const insertKeycloakUser = async (token: string, newUserName: string, email: string, password: string) => {
+    try {
+        const requestBody: any = {
+            username: newUserName,
+            email: email,
+            enabled: true,
+            credentials: [
+                {
+                    type: 'password',
+                    value: password,
+                    temporary: false,
+                }
+            ]
+        };
+        const authHeader = { Authorization: `Bearer ${token}` };
+        const url = `${process.env.KEYCLOAK_HOST}/admin/realms/${process.env.REALM_NAME}/users`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                ...authHeader,
+            },
+            body: JSON.stringify(requestBody)
+        });
+        // return {await response.json()};
+        return {ok: "user OK"};
+    } catch (error) {
+        console.error('Error al crear el usuario:', error);
+        throw error; // Puedes manejar el error de otra manera si es necesario
+    }
+}
+
 async function operationAuth(url: string, method: string, authHeader: any) {
     try {
         const response = await fetch(url, {
@@ -50,7 +82,7 @@ async function operationAuth(url: string, method: string, authHeader: any) {
             },
         });
         console.log(response);
-        return {"status": response.status};
+        return { "status": response.status };
     } catch (error) {
         console.error('Error en la solicitud:', error);
         throw error;

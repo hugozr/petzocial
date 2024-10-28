@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types';
-import { associateHuman, communityUpdate, filterUsers, genericDownloadExcel, getUsersByEmail, getUsersByName } from '../utils';
+import { associateHuman, communityUpdate, filterUsers, getUsersByEmail, getUsersByName } from '../utils';
+import { genericDownloadExcel } from '../excelUtils';
+import { getAccessTokens, insertKeycloakUser } from '../securityUtils';
 
 
 const Users: CollectionConfig = {
@@ -14,6 +16,19 @@ const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
+  endpoints: [
+    {
+      path: "/create-user-keycloak",
+      method: "post",
+      handler: async (req, res, next) => {
+        const user = {user: "nikki"};
+        const tokens: any = await getAccessTokens();
+        const addedUser = await insertKeycloakUser(tokens.access_token, "cori", "cori@a.com", "123");
+        console.log(addedUser);
+        res.status( 200 ).send(addedUser);
+      },
+    }
+  ],
   fields: [
     {
       name: 'email', 

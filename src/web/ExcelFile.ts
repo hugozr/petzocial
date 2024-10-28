@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types'
+import { generatePrefixFileName } from '../utils';
 
 export const ExcelFile: CollectionConfig = {
   slug: 'excels',
@@ -12,6 +13,18 @@ export const ExcelFile: CollectionConfig = {
     staticURL: '/excel-files',
     staticDir: 'excel-files',
     mimeTypes: ['application/*'],
+  },
+  hooks: {
+    beforeOperation: [async ({ args }) => {
+      const files = args.req?.files;
+      const username = args.req.body.username;
+      const collection =  args.req.body.collection;
+      if (files?.file?.name) {
+        const parts = files.file.name.split('.');
+        const prefix = generatePrefixFileName(collection, username);
+        files.file.name = `${prefix}-${files.file.name}`;
+      }
+    }]
   },
   fields: [
     {

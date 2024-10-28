@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { downloadInExcel } from '../../utils';
+import { downloadInExcel } from '../../excelUtils';
 
 const CommunityTypes: CollectionConfig = {
   slug: 'community-types',
