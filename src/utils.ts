@@ -394,6 +394,7 @@ export const syncronizeToApUser = async (keycloakData: any) => {
             collection: "app-users",
             data: {
                 username: keycloakData.keycloakUserName,
+                name: keycloakData.keycloakFullName,
                 email: keycloakData.keycloakEmail,
                 keycloakUserId: keycloakData.keycloakUserId,
             }

@@ -23,7 +23,7 @@ const Users: CollectionConfig = {
       handler: async (req, res, next) => {
         const user = {user: "nikki"};
         const tokens: any = await getAccessTokens();
-        const addedUser = await insertKeycloakUser(tokens.access_token, "cori", "cori@a.com", "123");
+        const addedUser = await insertKeycloakUser(tokens.access_token, "cori", "cori chase", "cori@a.com", "123");
         console.log(addedUser);
         res.status( 200 ).send(addedUser);
       },

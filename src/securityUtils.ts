@@ -40,12 +40,13 @@ export const getAccessTokens = async () => {
     return tokens;
 }
 
-export const insertKeycloakUser = async (token: string, newUserName: string, email: string, password: string) => {
+export const insertKeycloakUser = async (token: string, newUserName: string, firstName: string,  email: string, password: string) => {
     try {
         const requestBody: any = {
             username: newUserName,
             email: email,
             enabled: true,
+            firstName: firstName,
             credentials: [
                 {
                     type: 'password',
@@ -64,8 +65,9 @@ export const insertKeycloakUser = async (token: string, newUserName: string, ema
             },
             body: JSON.stringify(requestBody)
         });
-        // return {await response.json()};
-        return {ok: "user OK"};
+        const locationHeader = response.headers.get('Location');
+        const userId = locationHeader.split('/').pop();
+        return {ok: "user OK", keycloakUserId: userId};
     } catch (error) {
         console.error('Error al crear el usuario:', error);
         throw error; // Puedes manejar el error de otra manera si es necesario

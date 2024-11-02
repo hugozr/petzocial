@@ -4,7 +4,7 @@ import path from 'path';
 import chokidar from 'chokidar';
 
 import fs from 'fs';
-import { processFile, processMassiveHumans, processMassiveVets } from './excelUtils';
+import { processFile } from './excelUtils';
 
 
 
@@ -24,6 +24,8 @@ const start = async () => {
 
       const folderPathToUpload = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files';
       const folderPathToProcess = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files-pre-processed';
+      const folderPathToBackup = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files-backup';
+
       const watcherStepOne = chokidar.watch(folderPathToUpload, { persistent: true });
       const watcherStepTwo = chokidar.watch(folderPathToProcess, { persistent: true });
       watcherStepOne.on('add', (filePath) => {
@@ -31,8 +33,8 @@ const start = async () => {
           const fileName = (path.parse(filePath)).name + path.extname(filePath);
           const fullFileName = folderPathToUpload + "/" + fileName;
           const fullNewFileName = folderPathToProcess + "/" + fileName;
-          console.log(`Nuevo archivo detectado: ${filePath}`);
-          console.log("MOVIENDO ARCHIVO", fullFileName, "--->", fullNewFileName);
+          const fullBackupFileName = folderPathToBackup + "/" + fileName;
+          fs.copyFileSync(fullFileName, fullBackupFileName); 
           fs.renameSync(fullFileName, fullNewFileName);
         }
       });
@@ -40,8 +42,9 @@ const start = async () => {
       watcherStepTwo.on('add', (filePath) => {
         if (path.extname(filePath) === '.xlsx') {
           console.log(`PROCESANDO ARCHIVO: ${filePath}`);
-          const collection = ((path.parse(filePath)).name).split("-")[0];
-          processFile(filePath, collection);
+          const fileName = (path.parse(filePath)).name + path.extname(filePath)
+          processFile(filePath, fileName);
+          fs.unlinkSync(filePath);
         }
       });
       watcherStepOne.on('error', (error) => console.error(`Error al monitorear la carpeta: ${error}`));
