@@ -10,6 +10,10 @@ const Settings: GlobalConfig = {
       name: 'roles',
       type: 'json',
     },
+    {
+      name: 'mailMassiveLoad',
+      type: 'textarea',
+    },
   ],
 }
 export default Settings

@@ -5,6 +5,10 @@ import chokidar from 'chokidar';
 
 import fs from 'fs';
 import { processFile } from './excelUtils';
+import nodemailer from 'nodemailer'
+
+const nodemailer = require('nodemailer')
+
 
 
 
@@ -16,15 +20,27 @@ app.get('/', (_, res) => {
 })
 
 const start = async () => {
+  const transport = await nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    tls:{
+      rejectUnauthorized: false // Esto ignora los errores de certificado
+    }
+  });
+  // console.log(process.env.SMTP_USER, process.env.SMTP_PASS, process.env.SMTP_HOST,);
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
 
-      const folderPathToUpload = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files';
-      const folderPathToProcess = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files-pre-processed';
-      const folderPathToBackup = 'C:/ehzr/16.Petso/02.app/payload-petzocial/src/excel-files-backup';
+      const folderPathToUpload = process.env.FOLDER_PATH_TO_UPLOAD;
+      const folderPathToProcess = process.env.FOLDER_PATH_TO_PROCESS;
+      const folderPathToBackup = process.env.FOLDER_PATH_TO_BACKUP;
 
       const watcherStepOne = chokidar.watch(folderPathToUpload, { persistent: true });
       const watcherStepTwo = chokidar.watch(folderPathToProcess, { persistent: true });
@@ -50,6 +66,11 @@ const start = async () => {
       watcherStepOne.on('error', (error) => console.error(`Error al monitorear la carpeta: ${error}`));
       watcherStepTwo.on('error', (error) => console.error(`Error al monitorear la carpeta: ${error}`));
     },
+    email:{
+      fromName: 'Admin',
+      fromAddress: 'hzumaeta@gmail.com',
+      transport
+    }
   })
   app.listen(3000)
 }

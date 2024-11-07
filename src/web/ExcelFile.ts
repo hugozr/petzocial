@@ -10,8 +10,8 @@ export const ExcelFile: CollectionConfig = {
     update: () => true,
   },
   upload: {
-    staticURL: '/excel-files',
-    staticDir: 'excel-files',
+    staticURL: '/files/excel-files',
+    staticDir: 'files/excel-files',
     mimeTypes: ['application/*'],
   },
   hooks: {

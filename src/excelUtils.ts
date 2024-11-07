@@ -4,6 +4,7 @@ const exceljs = require("exceljs");
 const path = require('path');
 import XLSX from 'xlsx';
 import { getAccessTokens, insertKeycloakUser } from "./securityUtils";
+import { sendMassiveLoadEmail } from "./mailUtils";
 
 export async function processMassiveVets(jsonDataVets: any, file: string) {
     try {
@@ -18,12 +19,13 @@ export async function processMassiveVets(jsonDataVets: any, file: string) {
                 });
             }
             if (evalVetData.validData[0]) {
-                saveJsonAsExcel(evalVetData.validData, file, "Valid", './src/excel-files-processed');
+                // saveJsonAsExcel(evalVetData.validData, file, "Valid", './src/excel-files-processed');
+                saveJsonAsExcel(evalVetData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
             }
             if (evalVetData.notValidData[1]) {
-                saveJsonAsExcel(evalVetData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                // saveJsonAsExcel(evalVetData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                saveJsonAsExcel(evalVetData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
             }
-
         }
     } catch (error) {
         console.error("Error en la solicitud:", error);
@@ -42,11 +44,14 @@ export async function processMassiveHumans(jsonDataHumans: any, file: string) {
                 createUserAndKeycloakUserFromHuman(human, tokens.access_token);
             }
             if (evalHumanData.validData[0]) {
-                saveJsonAsExcel(evalHumanData.validData, file, "Valid", './src/excel-files-processed');
+                // saveJsonAsExcel(evalHumanData.validData, file, "Valid", './src/excel-files-processed');
+                saveJsonAsExcel(evalHumanData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
             }
             if (evalHumanData.notValidData[1]) {
-                saveJsonAsExcel(evalHumanData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                // saveJsonAsExcel(evalHumanData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                saveJsonAsExcel(evalHumanData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
             }
+            return evalHumanData;       //HZUMAETA: Retorno la evaluacion de los datos para poder notificar al usuario el resultade de la evaluacion
         }
     } catch (error) {
         console.error("Error en la solicitud:", error);
@@ -88,10 +93,12 @@ export async function processMassivePets(jsonDataPets: any, file: string) {
                 // });
             }
             if (evalPetData.validData[0]) {
-                saveJsonAsExcel (evalPetData.validData, file, "Valid", './src/excel-files-processed');
+                // saveJsonAsExcel (evalPetData.validData, file, "Valid", './src/excel-files-processed');
+                saveJsonAsExcel (evalPetData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
             }
             if (evalPetData.notValidData[1]) {
-                saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                // saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", './src/excel-files-not-valid');
+                saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
             }
         }
     } catch (error) {
@@ -134,14 +141,20 @@ export const genericDownloadExcel = async (slug: string, sheetName: string) => {
 
 export const processFile = async (filePath: string, file: string) => {
     const collection = file.split("-")[0];
+    let evalData: any = null;
     try {
         const workbook = XLSX.readFile(filePath);
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         if(collection == "vets") processMassiveVets(jsonData, file);
-        if(collection == "humans") processMassiveHumans(jsonData, file);
+        if(collection == "humans") {
+            evalData = await processMassiveHumans(jsonData, file);
+            console.log(evalData, "aaaaa");
+        }
         if(collection == "pets") processMassivePets(jsonData, file);
+        const send = await sendMassiveLoadEmail("hzumaeta@gmail.com", "prueba por procso", "pongo los html de lo cargado y los errores "+ JSON.stringify(evalData.validData)+"..."+JSON.stringify(evalData.notValidData));
+
     } catch (err) {
         console.error(`Error al procesar el archivo ${filePath}:`, err);
     }
@@ -182,6 +195,7 @@ const validateHumans = async (humansData: any): any => {
     const notValidData: any = [];
     const validData: any = [];
     for (const human of humansData) {
+        console.log(human, "45454545454545")
         const validatingHuman: any = await payload.find({
             collection: "humans",
             where: {
