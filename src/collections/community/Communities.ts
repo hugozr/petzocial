@@ -47,6 +47,11 @@ const Communities: CollectionConfig = {
       required: true,
     },
     {
+      name: 'zone', 
+      type: 'relationship', 
+      relationTo: 'zones', 
+    },
+    {
       name: 'address',
       type: 'text', 
     },
@@ -106,12 +111,6 @@ const Communities: CollectionConfig = {
       relationTo: 'community-types', 
       hasMany: false,
     },
-    // {
-    //   name: 'creator', 
-    //   type: 'relationship', 
-    //   relationTo: 'app-users', 
-    //   hasMany: false,
-    // },
     {
       name: 'petMembers', 
       type: 'relationship', 

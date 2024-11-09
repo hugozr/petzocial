@@ -4,7 +4,8 @@ const exceljs = require("exceljs");
 const path = require('path');
 import XLSX from 'xlsx';
 import { getAccessTokens, insertKeycloakUser } from "./securityUtils";
-import { sendMassiveLoadEmail } from "./mailUtils";
+import { getSettings, sendMassiveLoadEmail } from "./mailUtils";
+import { generateHTMLTable } from "./utils";
 
 export async function processMassiveVets(jsonDataVets: any, file: string) {
     try {
@@ -12,7 +13,7 @@ export async function processMassiveVets(jsonDataVets: any, file: string) {
             const vetsData = transformVetArray(jsonDataVets);
             const evalVetData: any = await validateVets(vetsData);
             for (const vet of vetsData) {
-                console.log(vet);
+                // console.log(vet);
                 const newVet = await payload.create({
                     collection: "vets",
                     data: vet,
@@ -65,7 +66,7 @@ async function createUserAndKeycloakUserFromHuman(human: any, token: string){
         data: human
     });
     const addedKeycloakUser: any = await insertKeycloakUser(token, human.nickName, human.name, human.email, "123");
-    console.log(addedKeycloakUser, "ver que hay", newHuman);
+    // console.log(addedKeycloakUser, "ver que hay", newHuman);
     const addedAppUser = await payload.create({
         collection: "app-users",
         data: {
@@ -150,10 +151,26 @@ export const processFile = async (filePath: string, file: string) => {
         if(collection == "vets") processMassiveVets(jsonData, file);
         if(collection == "humans") {
             evalData = await processMassiveHumans(jsonData, file);
-            console.log(evalData, "aaaaa");
         }
         if(collection == "pets") processMassivePets(jsonData, file);
-        const send = await sendMassiveLoadEmail("hzumaeta@gmail.com", "prueba por procso", "pongo los html de lo cargado y los errores "+ JSON.stringify(evalData.validData)+"..."+JSON.stringify(evalData.notValidData));
+        const tableValids = generateHTMLTable(evalData.validData);
+        const tableNotValids = generateHTMLTable(evalData.notValidData);
+        const settings: any = await getSettings();
+        let body: string = settings.mailMassiveLoad;
+        let subject: string = settings.mailMassiveLoadSubject;
+        if(tableValids != ""){
+            body = body.replace("{{valid-section}}", "<p>Valid records</p>" + tableValids);
+        }
+        
+        if(tableNotValids != ""){
+            body = body.replace("{{not-valid-section}}", "<p>Not valid records</p>" + tableNotValids);
+        }
+        const nValidLength =  evalData.validData.length;
+        const nNotValidLength =  evalData.notValidData.length;
+        subject = subject.replace("{{q-valid}}", nValidLength);
+        subject = subject.replace("{{q-not-valid}}", nNotValidLength);
+        subject = subject.replace("{{collection}}", "humans");
+        const send = await sendMassiveLoadEmail("hzumaeta@gmail.com", subject, body);
 
     } catch (err) {
         console.error(`Error al procesar el archivo ${filePath}:`, err);
@@ -195,7 +212,6 @@ const validateHumans = async (humansData: any): any => {
     const notValidData: any = [];
     const validData: any = [];
     for (const human of humansData) {
-        console.log(human, "45454545454545")
         const validatingHuman: any = await payload.find({
             collection: "humans",
             where: {

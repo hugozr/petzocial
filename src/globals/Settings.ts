@@ -14,6 +14,10 @@ const Settings: GlobalConfig = {
       name: 'mailMassiveLoad',
       type: 'textarea',
     },
+    {
+      name: 'mailMassiveLoadSubject',
+      type: 'text',
+    },
   ],
 }
 export default Settings

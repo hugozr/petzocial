@@ -216,29 +216,38 @@ export const filterHumans = async (data: any) => {
     return humans;
 }
 export const filterCommunities = async (data: any) => {
+    let filterCondition: any = {
+        or: [
+            {
+                name: {
+                    like: data.filter,
+                },
+            },
+            {
+                comment: {
+                    like: data.filter,
+                },
+            },
+            {
+                "type.name": {
+                    like: data.filter,
+                },
+            },
+        ]
+    };
+    if (data.zone){     //Si en el body existe la zona, entonces filtro por la zona también y lo pongo en el AND, de esta forma no modifico el query original
+        const zoneCondition: any = {
+            zone: {
+                equals: data.zone
+            }
+        } 
+        filterCondition = {and: [filterCondition, zoneCondition]}
+    }
     const communities = await payload.find({
         collection: 'communities',
         page: data.page,
         limit: data.limit,
-        where: {
-            or: [
-                {
-                    name: {
-                        like: data.filter,
-                    },
-                },
-                {
-                    comment: {
-                        like: data.filter,
-                    },
-                },
-                {
-                    "type.name": {
-                        like: data.filter,
-                    },
-                },
-            ]
-        },
+        where: filterCondition
     });
     return communities;
 }
@@ -270,6 +279,7 @@ export const filterUsers = async (data: any) => {
     return communities;
 }
 export const communityUpdate = async (userId: string, data: any) => {
+    //Este método es necesario porque un app-user puede manejar varias comunidades
     //HZUMAETA: Recibe en el body {"operation": "insert" || "delete", "communityId": communityId}
     const user: any = await payload.findByID({
         collection: 'app-users',
@@ -414,3 +424,55 @@ export function generatePrefixFileName(id, user) {
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
     return `${id}-${user}-${yyyymmdd}-${hhmmss}-${randomNumber}`;
 }
+
+// type JsonObject = { [key: string]: any };
+
+export function generateHTMLTable(data: any): string {
+  // Verificar si el arreglo de datos está vacío
+  if (data.length === 0) {
+    return "";
+  }
+
+  // Obtener los encabezados de la tabla a partir de las claves del primer objeto
+  const headers = Object.keys(data[0]);
+
+  // Generar la fila de encabezados
+  const headerHTML = headers
+    .map(header => `<th>${header}</th>`)
+    .join("");
+
+  // Generar las filas de datos
+  const rowsHTML = data
+    .map(obj => {
+      // Crear celdas de la fila para cada propiedad en headers
+      const cells = headers
+        .map(header => `<td>${obj[header] !== undefined ? obj[header] : ""}</td>`)
+        .join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+  // Armar la tabla completa
+  const tableHTML = `
+    <table border="1">
+      <thead>
+        <tr>${headerHTML}</tr>
+      </thead>
+      <tbody>
+        ${rowsHTML}
+      </tbody>
+    </table>
+  `;
+
+  return tableHTML;
+}
+
+// // Ejemplo de uso
+// const data = [
+//   { name: "Juan", age: 25, country: "México" },
+//   { name: "Ana", age: 28, country: "Argentina" },
+//   { name: "Carlos", age: 35, country: "Perú" }
+// ];
+
+// const tableHTML = generateHTMLTable(data);
+// console.log(tableHTML); // Imprime el HTML de la tabla
