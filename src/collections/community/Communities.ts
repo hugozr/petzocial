@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterCommunities, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
+import { filterCommunities, linkCommunityToUsername, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
 
 const Communities: CollectionConfig = {
   slug: 'communities',
@@ -13,6 +13,17 @@ const Communities: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ["name","address","comment"]
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, previousDoc }) => {
+        if (operation === 'create') {
+          const userCommunity = await linkCommunityToUsername(doc);
+          console.log(userCommunity);
+        }
+        console.log('Documento anterior:', previousDoc);
+      }
+    ],
   },
   endpoints: [
     {

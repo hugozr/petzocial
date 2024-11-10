@@ -27,8 +27,8 @@ export const associateHuman = async (userId) => {
     let returned = null;
     if (humans.length > 0) {
         returned = await payload.update({
-            collection: 'app-users', 
-            id: userId, 
+            collection: 'app-users',
+            id: userId,
             data: {
                 human: humans[0].id,
             }
@@ -37,7 +37,7 @@ export const associateHuman = async (userId) => {
     return returned
 }
 export const getUsersByName = async (username) => {
-    
+
     const users = await payload.find({
         collection: 'app-users',
         where: {
@@ -129,7 +129,7 @@ export const filterPetsByHumanId = async (data: any) => {
     return human.pets;
 }
 export const petLike = async (data: any) => {
-    return {"like": "ok"};
+    return { "like": "ok" };
 }
 
 export const filterPetsByCommunityId = async (data: any) => {
@@ -235,13 +235,13 @@ export const filterCommunities = async (data: any) => {
             },
         ]
     };
-    if (data.zone){     //Si en el body existe la zona, entonces filtro por la zona también y lo pongo en el AND, de esta forma no modifico el query original
+    if (data.zone) {     //Si en el body existe la zona, entonces filtro por la zona también y lo pongo en el AND, de esta forma no modifico el query original
         const zoneCondition: any = {
             zone: {
                 equals: data.zone
             }
-        } 
-        filterCondition = {and: [filterCondition, zoneCondition]}
+        }
+        filterCondition = { and: [filterCondition, zoneCondition] }
     }
     const communities = await payload.find({
         collection: 'communities',
@@ -304,8 +304,8 @@ export const communityUpdate = async (userId: string, data: any) => {
     communities = communities.filter(element => element !== undefined);
 
     const result = await payload.update({
-        collection: 'app-users', 
-        id: userId, 
+        collection: 'app-users',
+        id: userId,
         data: {
             communities: communities
         },
@@ -322,11 +322,61 @@ export const retrieveCommunitiesByUsername = async (username: string) => {
                 equals: username,
             },
         },
-        }
+    }
     );
     return communities;
 }
 
+
+export const linkCommunityToUsername = async (community: any) => {
+    const created = await payload.create({
+        collection: "communities-by-username",
+        data: {
+            username: community.kcUserName,
+            community: community.id,
+        }
+    });
+    return created;
+}
+
+export const getCommunitiesByUsername = async (username: string) => {
+    const toReturn = await payload.find({
+        collection: 'communities-by-username',
+        where: {
+            and: [
+                {
+                    username: {
+                        equals: username,
+                    }
+                }
+            ]
+        },
+    });
+    return toReturn.docs;
+}
+
+export const delCommunityByUsername = async (body: any) => {
+    console.log(body, "voy a eliminar")
+    const toDelete = await payload.delete({
+        collection: 'communities-by-username',
+        where: {
+            and: [
+                {
+                    community: {
+                        equals: body.community,
+                    }
+                },
+                {
+                    username: {
+                        equals: body.username
+                    }
+                }
+            ]
+        },
+    });
+    console.log(toDelete, "debe ir el delete")
+    return toDelete.docs;
+}
 
 export const petUpdate = async (communityId: string, data: any) => {
     const community: any = await payload.findByID({
@@ -351,7 +401,7 @@ export const petUpdate = async (communityId: string, data: any) => {
 
     const result = await payload.update({
         collection: 'communities',
-        id: communityId, 
+        id: communityId,
         data: {
             petMembers
         },
@@ -369,12 +419,12 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
 
     if (human) {
         let petIds: any = human.pets.map(pet => pet.id);
-        if(!petIds) petIds = [];
+        if (!petIds) petIds = [];
         if (!petIds.includes(petId)) {
             petIds.push(petId);
             const result = await payload.update({
-                collection: 'humans', 
-                id: humanId, 
+                collection: 'humans',
+                id: humanId,
                 data: {
                     pets: petIds
                 },
@@ -389,7 +439,7 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
 
 
 export const syncronizeToApUser = async (keycloakData: any) => {
-    let createdUser = false;     
+    let createdUser = false;
     // console.log("parece que no viene unsername",keycloakData);
     const users = await payload.find({
         collection: 'app-users',
@@ -399,7 +449,7 @@ export const syncronizeToApUser = async (keycloakData: any) => {
             },
         },
     });
-    if(users.totalDocs == 0) {
+    if (users.totalDocs == 0) {
         const user = await payload.create({
             collection: "app-users",
             data: {
@@ -428,32 +478,32 @@ export function generatePrefixFileName(id, user) {
 // type JsonObject = { [key: string]: any };
 
 export function generateHTMLTable(data: any): string {
-  // Verificar si el arreglo de datos está vacío
-  if (data.length === 0) {
-    return "";
-  }
+    // Verificar si el arreglo de datos está vacío
+    if (data.length === 0) {
+        return "";
+    }
 
-  // Obtener los encabezados de la tabla a partir de las claves del primer objeto
-  const headers = Object.keys(data[0]);
+    // Obtener los encabezados de la tabla a partir de las claves del primer objeto
+    const headers = Object.keys(data[0]);
 
-  // Generar la fila de encabezados
-  const headerHTML = headers
-    .map(header => `<th>${header}</th>`)
-    .join("");
-
-  // Generar las filas de datos
-  const rowsHTML = data
-    .map(obj => {
-      // Crear celdas de la fila para cada propiedad en headers
-      const cells = headers
-        .map(header => `<td>${obj[header] !== undefined ? obj[header] : ""}</td>`)
+    // Generar la fila de encabezados
+    const headerHTML = headers
+        .map(header => `<th>${header}</th>`)
         .join("");
-      return `<tr>${cells}</tr>`;
-    })
-    .join("");
 
-  // Armar la tabla completa
-  const tableHTML = `
+    // Generar las filas de datos
+    const rowsHTML = data
+        .map(obj => {
+            // Crear celdas de la fila para cada propiedad en headers
+            const cells = headers
+                .map(header => `<td>${obj[header] !== undefined ? obj[header] : ""}</td>`)
+                .join("");
+            return `<tr>${cells}</tr>`;
+        })
+        .join("");
+
+    // Armar la tabla completa
+    const tableHTML = `
     <table border="1">
       <thead>
         <tr>${headerHTML}</tr>
@@ -464,7 +514,7 @@ export function generateHTMLTable(data: any): string {
     </table>
   `;
 
-  return tableHTML;
+    return tableHTML;
 }
 
 // // Ejemplo de uso
