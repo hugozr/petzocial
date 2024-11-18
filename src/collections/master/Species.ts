@@ -37,18 +37,16 @@ const Species: CollectionConfig = {
       name: 'breeds', 
       type: 'array', 
       label: 'Breeds',
-      interfaceName: 'Breeds', // optional
+      interfaceName: 'Breeds', 
       labels: {
         singular: 'Breed',
         plural: 'Breeds',
       },
       fields: [
-        
         {
           name: 'name',
           type: 'text',
         },
-        
         {
           name: 'order',
           type: 'number',

@@ -19,9 +19,10 @@ export const ExcelFile: CollectionConfig = {
       const files = args.req?.files;
       const username = args.req.body.username;
       const collection =  args.req.body.collection;
+      const filterId =  args.req.body.filterId;
       if (files?.file?.name) {
         const parts = files.file.name.split('.');
-        const prefix = generatePrefixFileName(collection, username);
+        const prefix = generatePrefixFileName(collection, username, filterId);
         files.file.name = `${prefix}-${files.file.name}`;
       }
     }]

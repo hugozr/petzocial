@@ -28,6 +28,7 @@ import Zones from "./collections/master/Zones";
 import Places from "./collections/master/Places";
 import Emails from "./web/Emails";
 import CommunitiesByUsername from "./collections/community/CommunitiesByUsername";
+import CommunitiesByPets from "./collections/community/CommunitiesByPets";
 
 export default buildConfig({
   admin: {
@@ -55,6 +56,7 @@ export default buildConfig({
     Humans,
     CommunityTypes,
     Communities,
+    CommunitiesByPets,
     CommunitiesByUsername,
     Options,
     AppUsers,

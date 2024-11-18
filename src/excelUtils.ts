@@ -5,7 +5,7 @@ const path = require('path');
 import XLSX from 'xlsx';
 import { getAccessTokens, insertKeycloakUser } from "./securityUtils";
 import { getSettings, sendMassiveLoadEmail } from "./mailUtils";
-import { generateHTMLTable } from "./utils";
+import { createPet, generateHTMLTable, humanAssignedToPet } from "./utils";
 
 export async function processMassiveVets(jsonDataVets: any, file: string) {
     try {
@@ -40,16 +40,13 @@ export async function processMassiveHumans(jsonDataHumans: any, file: string) {
             const humansData = transformHumanArray(jsonDataHumans);
             const evalHumanData: any = await validateHumans(humansData);
             const tokens: any = await getAccessTokens();
-        
             for (const human of evalHumanData.validData) {
                 createUserAndKeycloakUserFromHuman(human, tokens.access_token);
             }
             if (evalHumanData.validData[0]) {
-                // saveJsonAsExcel(evalHumanData.validData, file, "Valid", './src/excel-files-processed');
                 saveJsonAsExcel(evalHumanData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
             }
             if (evalHumanData.notValidData[1]) {
-                // saveJsonAsExcel(evalHumanData.notValidData, file, "Not valid", './src/excel-files-not-valid');
                 saveJsonAsExcel(evalHumanData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
             }
             return evalHumanData;       //HZUMAETA: Retorno la evaluacion de los datos para poder notificar al usuario el resultade de la evaluacion
@@ -60,13 +57,64 @@ export async function processMassiveHumans(jsonDataHumans: any, file: string) {
     }
 }
 
-async function createUserAndKeycloakUserFromHuman(human: any, token: string){
+export async function processMassivePets(jsonDataPets: any, file: string, communityId: string) {
+    try {
+        if (Array.isArray(jsonDataPets)) {
+            const petsData = transformPetArray(jsonDataPets);
+            const species: any = await payload.find({
+                collection: "species",
+            });
+            const evalPetData: any = await validatePetsAndHumans(petsData);
+            for (const petExcel of evalPetData.validData) {
+                const specieAndBreed: any = getSpecieAndBreed(species.docs, petExcel.specie, petExcel.breed);
+                const pet: any = {
+                    name: petExcel.name,
+                    specie: {
+                        specieId: specieAndBreed.specie.id,
+                        name: petExcel.specie
+                    },
+                    breed: {
+                        breedId: specieAndBreed.breed.id,
+                        name: petExcel.breed
+                    }
+                };
+                const humanData: any = await payload.findByID({
+                    collection: 'humans',
+                    id: petExcel.humanId
+                });
+                const human: any = {
+                    name: humanData.name,
+                    email: petExcel.email,
+                    id: petExcel.humanId
+                };
+                createPetAndAssociatedHumanAndCommunity({ pet, human, communityId });
+            }
+            if (evalPetData.validData[0]) {
+                saveJsonAsExcel(evalPetData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
+            }
+            if (evalPetData.notValidData[1]) {
+                saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
+            }
+            return evalPetData;
+        }
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        throw error;
+    }
+}
+
+function getSpecieAndBreed(species: any, specieName: string, breedName: string) {
+    const foundSpecie: any = species.find(item => item.name.toLowerCase() === specieName.toLowerCase());
+    const foundBreed: any = foundSpecie.breeds.find(item => item.name.toLowerCase() === breedName.toLowerCase());
+    return {specie: foundSpecie, breed: foundBreed};
+}
+
+async function createUserAndKeycloakUserFromHuman(human: any, token: string) {
     const newHuman = await payload.create({
         collection: "humans",
         data: human
     });
     const addedKeycloakUser: any = await insertKeycloakUser(token, human.nickName, human.name, human.email, "123");
-    // console.log(addedKeycloakUser, "ver que hay", newHuman);
     const addedAppUser = await payload.create({
         collection: "app-users",
         data: {
@@ -76,35 +124,19 @@ async function createUserAndKeycloakUserFromHuman(human: any, token: string){
             human: newHuman.id
         }
     });
-        
 }
 
-export async function processMassivePets(jsonDataPets: any, file: string) {
-    try {
-        if (Array.isArray(jsonDataPets)) {
-            const petsData = transformHumanArray(jsonDataPets);
-            const evalPetData: any = await validatePets(petsData);
-
-            for (const human of evalPetData.validData) {
-                // console.log(human);
-                // console.log(human, "para insertar");
-                // const newHuman = await payload.create({
-                //     collection: "humans",
-                //     data: human
-                // });
+async function createPetAndAssociatedHumanAndCommunity(petHumanCommunity: any) {
+    const addedPet = await createPet(petHumanCommunity.pet, petHumanCommunity.human);
+    const response = await humanAssignedToPet(petHumanCommunity.human.id, addedPet.id);
+    if(petHumanCommunity.communityId){
+        const member = await payload.create({
+            collection: "communities-by-pets",
+            data:  {
+                community: petHumanCommunity.communityId,
+                pet: addedPet.id
             }
-            if (evalPetData.validData[0]) {
-                // saveJsonAsExcel (evalPetData.validData, file, "Valid", './src/excel-files-processed');
-                saveJsonAsExcel (evalPetData.validData, file, "Valid", process.env.FOLDER_PATH_PROCESSED);
-            }
-            if (evalPetData.notValidData[1]) {
-                // saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", './src/excel-files-not-valid');
-                saveJsonAsExcel(evalPetData.notValidData, file, "Not valid", process.env.FOLDER_PATH_NOT_VALID);
-            }
-        }
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-        throw error;
+        }); 
     }
 }
 
@@ -148,25 +180,28 @@ export const processFile = async (filePath: string, file: string) => {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        if(collection == "vets") processMassiveVets(jsonData, file);
-        if(collection == "humans") {
+        if (collection == "vets") processMassiveVets(jsonData, file);
+        if (collection == "humans") {
             evalData = await processMassiveHumans(jsonData, file);
         }
-        if(collection == "pets") processMassivePets(jsonData, file);
+        if (collection == "pets") {
+            const communityId = file.split("-")[2];
+            evalData = await processMassivePets(jsonData, file, communityId);
+        }
         const tableValids = generateHTMLTable(evalData.validData);
         const tableNotValids = generateHTMLTable(evalData.notValidData);
         const settings: any = await getSettings();
         let body: string = settings.mailMassiveLoad;
         let subject: string = settings.mailMassiveLoadSubject;
-        if(tableValids != ""){
+        if (tableValids != "") {
             body = body.replace("{{valid-section}}", "<p>Valid records</p>" + tableValids);
         }
-        
-        if(tableNotValids != ""){
+
+        if (tableNotValids != "") {
             body = body.replace("{{not-valid-section}}", "<p>Not valid records</p>" + tableNotValids);
         }
-        const nValidLength =  evalData.validData.length;
-        const nNotValidLength =  evalData.notValidData.length;
+        const nValidLength = evalData.validData.length;
+        const nNotValidLength = evalData.notValidData.length;
         subject = subject.replace("{{q-valid}}", nValidLength);
         subject = subject.replace("{{q-not-valid}}", nNotValidLength);
         subject = subject.replace("{{collection}}", "humans");
@@ -177,7 +212,7 @@ export const processFile = async (filePath: string, file: string) => {
     }
 }
 
-const validateVets = async (vetsData: any): any => {
+const validateVets = async (vetsData: any) => {
     const notValidData: any = [];
     const validData: any = [];
     for (const vet of vetsData) {
@@ -208,7 +243,7 @@ const validateVets = async (vetsData: any): any => {
     return { validData, notValidData };
 };
 
-const validateHumans = async (humansData: any): any => {
+const validateHumans = async (humansData: any) => {
     const notValidData: any = [];
     const validData: any = [];
     for (const human of humansData) {
@@ -239,7 +274,7 @@ const validateHumans = async (humansData: any): any => {
     return { validData, notValidData };
 };
 
-const validatePets = async (petsData: any): any => {
+const validatePetsAndHumans = async (petsData: any) => {
     const notValidData: any = [];
     const validData: any = [];
     for (const pet of petsData) {
@@ -249,23 +284,48 @@ const validatePets = async (petsData: any): any => {
                 and: [
                     {
                         name: {
-                            like: pet.name,
+                            equals: pet.name,
                         },
                     },
                     {
                         "human.email": {
-                            like: pet.email,
+                            equals: pet.email,
                         },
                     },
                 ],
             },
         });
         if (validatingPet.docs[0]) {
-            pet.error = "Pet's and human email are already registered like a pet";
+            pet.error = "Pet's and human's email are already registered like a pet";
             notValidData.push(pet);
-        } else {
-            validData.push(pet);
+            continue;
         }
+        const validatingHuman: any = await payload.find({
+            collection: "humans",
+            where: {
+                and: [
+                    {
+                        nickName: {
+                            equals: pet.nickName,
+                        },
+                    },
+                    {
+                        email: {
+                            equals: pet.email,
+                        },
+                    },
+                ],
+            },
+        });
+        if (!validatingHuman.docs[0]) {
+            pet.error = "Human does not exists.";
+            notValidData.push(pet);
+            continue;
+        }
+        //HZUMAETA Necesito el ID del huamno para poder asociarlo a la mascota.
+        pet.humanName = validatingHuman.docs[0].name;
+        pet.humanId = validatingHuman.docs[0].id;
+        validData.push(pet);
     }
     return { validData, notValidData };
 };
@@ -292,10 +352,22 @@ const transformHumanArray = (data: any[]): any[] => {
     }));
 };
 
-function saveJsonAsExcel(jsonData: any, file: string, sheetName: string, outputPath: string){
+const transformPetArray = (data: any[]): any[] => {
+    return data.map((item) => ({
+        name: item.petName,
+        specie: item.specie,
+        breed: item.breed,
+        gender: item.gender,
+        nickName: item.nickName,
+        email: item.email,
+    }));
+
+};
+
+function saveJsonAsExcel(jsonData: any, file: string, sheetName: string, outputPath: string) {
     jsonToExcel(jsonData, file, sheetName, outputPath)
-                        .then(message => console.log(message))
-                        .catch(error => console.error(error));
+        .then(message => console.log(message))
+        .catch(error => console.error(error));
 }
 
 function getLabelsFromJSON(jsonData) {

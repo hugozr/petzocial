@@ -5,7 +5,7 @@ import payload from 'payload'
 export const getHumansByEmail = async (email) => {
     const humans = await payload.find({
         collection: 'humans',
-        depth: 1,
+        depth: 2,
         where: {
             email: {
                 equals: email,
@@ -339,6 +339,34 @@ export const linkCommunityToUsername = async (community: any) => {
     return created;
 }
 
+export const createPet = async (pet: any, human: any) => {
+    const petToAdd: any = {
+        name: pet.name,
+        comment: "Put some information aboout me",
+        specie: {
+            specieId: pet.specie.specieId,
+            name:  pet.specie.name,
+        },
+        breed: {
+            breedId: pet.breed.breedId,
+            name:  pet.breed.name
+        }
+    };
+    if(human){
+        petToAdd.human = {
+            name: human.nickName,
+            humanId: human.id,
+            email: human.email
+        }
+    } 
+    const createdPet: any = await payload.create({
+        collection: "pets",
+        data:  petToAdd
+    });
+    
+    return createdPet;
+}
+
 export const getCommunitiesByUsername = async (username: string) => {
     const toReturn = await payload.find({
         collection: 'communities-by-username',
@@ -353,6 +381,23 @@ export const getCommunitiesByUsername = async (username: string) => {
         },
     });
     return toReturn.docs;
+}
+
+export const getMembers = async (communityId: string) => {
+    const members = await payload.find({
+        collection: 'communities-by-pets',
+        depth: 3,
+        where: {
+            and: [
+                {
+                    "community.id": {
+                        equals: communityId,
+                    }
+                }
+            ]
+        },
+    });
+    return members.docs;
 }
 
 export const delCommunityByUsername = async (body: any) => {
@@ -374,7 +419,26 @@ export const delCommunityByUsername = async (body: any) => {
             ]
         },
     });
-    console.log(toDelete, "debe ir el delete")
+    return toDelete.docs;
+}
+export const delCommunityByPet = async (body: any) => {
+    const toDelete = await payload.delete({
+        collection: 'communities-by-pets',
+        where: {
+            and: [
+                {
+                    community: {
+                        equals: body.communityId,
+                    }
+                },
+                {
+                    pet: {
+                        equals: body.petId
+                    }
+                }
+            ]
+        },
+    });
     return toDelete.docs;
 }
 
@@ -416,10 +480,10 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
         collection: 'humans',
         id: humanId
     });
-
+    console.log(human, "ver que tiene")
     if (human) {
-        let petIds: any = human.pets.map(pet => pet.id);
-        if (!petIds) petIds = [];
+        let petIds: any = human.pets ? human.pets.map(pet => pet.id) : [];
+        // if (!petIds) petIds = [];
         if (!petIds.includes(petId)) {
             petIds.push(petId);
             const result = await payload.update({
@@ -467,18 +531,16 @@ export const syncronizeToApUser = async (keycloakData: any) => {
 }
 
 
-export function generatePrefixFileName(id, user) {
+export function generatePrefixFileName(collection, user, filterId) {
+    const filter = filterId ? filterId : "SF";
     const date = new Date();
     const yyyymmdd = date.toISOString().slice(0, 10).replace(/-/g, "");
     const hhmmss = date.toTimeString().slice(0, 8).replace(/:/g, "");
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
-    return `${id}-${user}-${yyyymmdd}-${hhmmss}-${randomNumber}`;
+    return `${collection}-${user}-${filter}-${yyyymmdd}-${hhmmss}-${randomNumber}`;
 }
 
-// type JsonObject = { [key: string]: any };
-
 export function generateHTMLTable(data: any): string {
-    // Verificar si el arreglo de datos está vacío
     if (data.length === 0) {
         return "";
     }
@@ -517,12 +579,3 @@ export function generateHTMLTable(data: any): string {
     return tableHTML;
 }
 
-// // Ejemplo de uso
-// const data = [
-//   { name: "Juan", age: 25, country: "México" },
-//   { name: "Ana", age: 28, country: "Argentina" },
-//   { name: "Carlos", age: 35, country: "Perú" }
-// ];
-
-// const tableHTML = generateHTMLTable(data);
-// console.log(tableHTML); // Imprime el HTML de la tabla
