@@ -42,6 +42,7 @@ const Communities: CollectionConfig = {
         res.status( 200 ).send(community);
       },
     },
+
     {
       path: '/:username/by-username',
       method: "get",

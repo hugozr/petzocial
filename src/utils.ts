@@ -14,6 +14,37 @@ export const getHumansByEmail = async (email) => {
     });
     return humans.docs;
 }
+
+
+export const getPetsHumansByEmail = async (email: string) => {
+    let pets: any = null;
+    let human: any = null;
+    const humans = await payload.find({
+        collection: 'humans',
+        depth: 1,
+        where: {
+            email: {
+                equals: email,
+            },
+        },
+    });
+    if (humans.docs[0]){
+        human = humans.docs[0];
+        const humanPets = await payload.find({
+            collection: 'humans-by-pets',
+            depth: 2,
+            where: {
+                human: {
+                    equals: humans.docs[0].id,
+                },
+            },
+        });
+        pets = humanPets.docs.map(item => item.pet);
+        console.log(pets,"nnnn")
+    }
+    return {human, pets};
+}
+
 const getUserById = async (id) => {
     const user = await payload.findByID({
         collection: 'app-users',
@@ -339,10 +370,11 @@ export const linkCommunityToUsername = async (community: any) => {
     return created;
 }
 
-export const createPet = async (pet: any, human: any) => {
+export const createPet = async (pet: any, human: any, zoneId: string) => {
     const petToAdd: any = {
         name: pet.name,
         comment: "Put some information aboout me",
+        zone: zoneId,
         specie: {
             specieId: pet.specie.specieId,
             name:  pet.specie.name,
@@ -354,7 +386,7 @@ export const createPet = async (pet: any, human: any) => {
     };
     if(human){
         petToAdd.human = {
-            name: human.nickName,
+            name: human.name,
             humanId: human.id,
             email: human.email
         }
@@ -399,9 +431,29 @@ export const getMembers = async (communityId: string) => {
     });
     return members.docs;
 }
+export const petIsCommunityMember = async (communityId: string, petId: string) => {
+    const member = await payload.find({
+        collection: 'communities-by-pets',
+        depth: 1,
+        where: {
+            and: [
+                {
+                    "community.id": {
+                        equals: communityId,
+                    }
+                },
+                {
+                    "pet.id": {
+                        equals: petId,
+                    }
+                },
+            ]
+        },
+    });
+    return member.docs;
+}
 
 export const delCommunityByUsername = async (body: any) => {
-    console.log(body, "voy a eliminar")
     const toDelete = await payload.delete({
         collection: 'communities-by-username',
         where: {
@@ -441,7 +493,36 @@ export const delCommunityByPet = async (body: any) => {
     });
     return toDelete.docs;
 }
-
+export const petInsert = async (body: any) => {
+    const canInsert = await payload.find({
+        collection: 'communities-by-pets',
+        where: {
+            and: [
+                {
+                    community: {
+                        equals: body.community,
+                    }
+                },
+                {
+                    pet: {
+                        equals: body.pet
+                    }
+                }
+            ]
+        },
+    });
+    console.log(canInsert, "ber")
+    if(canInsert.docs[0]) return canInsert.docs[0]; 
+    const toInsert = await payload.create({
+        collection: 'communities-by-pets',
+        data: {
+            pet: body.pet,
+            community: body.community,
+        },
+    });
+    console.log(toInsert, "insettado")
+    return toInsert;
+}
 export const petUpdate = async (communityId: string, data: any) => {
     const community: any = await payload.findByID({
         collection: 'communities',
@@ -480,10 +561,8 @@ export const humanAssignedToPet = async (humanId: string, petId: string) => {
         collection: 'humans',
         id: humanId
     });
-    console.log(human, "ver que tiene")
     if (human) {
         let petIds: any = human.pets ? human.pets.map(pet => pet.id) : [];
-        // if (!petIds) petIds = [];
         if (!petIds.includes(petId)) {
             petIds.push(petId);
             const result = await payload.update({

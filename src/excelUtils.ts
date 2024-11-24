@@ -127,7 +127,13 @@ async function createUserAndKeycloakUserFromHuman(human: any, token: string) {
 }
 
 async function createPetAndAssociatedHumanAndCommunity(petHumanCommunity: any) {
-    const addedPet = await createPet(petHumanCommunity.pet, petHumanCommunity.human);
+    const community: any = await payload.findByID({
+        collection: "communities",
+        id: petHumanCommunity.communityId 
+    });
+    const zoneId: string = community.zone.id;     //HZUMAETA: Obtiene la zona para poder pasarla a la mascota para la creacion
+    console.log(petHumanCommunity.human, "este humano va a grabar")
+    const addedPet = await createPet(petHumanCommunity.pet, petHumanCommunity.human, zoneId );
     const response = await humanAssignedToPet(petHumanCommunity.human.id, addedPet.id);
     if(petHumanCommunity.communityId){
         const member = await payload.create({

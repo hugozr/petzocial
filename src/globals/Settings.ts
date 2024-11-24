@@ -18,6 +18,12 @@ const Settings: GlobalConfig = {
       name: 'mailMassiveLoadSubject',
       type: 'text',
     },
+    {
+      name: 'noImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
   ],
 }
 export default Settings

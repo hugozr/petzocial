@@ -1,8 +1,8 @@
 import { CollectionConfig } from 'payload/types'
-import { delCommunityByPet, getMembers, petInsert, petIsCommunityMember } from '../../utils';
+import { delCommunityByPet, delCommunityByUsername, filterCommunities, getCommunitiesByUsername, getMembers, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
 
-const CommunitiesByPets: CollectionConfig = {
-  slug: 'communities-by-pets',
+const HumansByPets: CollectionConfig = {
+  slug: 'humans-by-pets',
   auth: false,
   access: {
     read: () => true,
@@ -31,30 +31,12 @@ const CommunitiesByPets: CollectionConfig = {
         res.status( 200 ).send(members);
       },
     },
-    
-    {
-      path: '/:communityId/:petId/is-member',
-      method: 'get',
-      handler: async (req, res, next) => {
-        const isMember = await petIsCommunityMember(req.params.communityId, req.params.petId); 
-        console.log(isMember, "lalalala")
-        res.status( 200 ).send(isMember);
-      },
-    },
-    {
-      path: '/insert-member',
-      method: "post",
-      handler: async (req, res, next) => {
-        const member = await petInsert(req.body);
-        res.status( 200 ).send(member);
-      },
-    },
   ],
   fields: [
     {
-      name: 'community', 
+      name: 'human', 
       type: 'relationship', 
-      relationTo: 'communities', 
+      relationTo: 'humans', 
     },
     {
       name: 'pet', 
@@ -64,4 +46,4 @@ const CommunitiesByPets: CollectionConfig = {
   ],
 }
 
-export default CommunitiesByPets
+export default HumansByPets

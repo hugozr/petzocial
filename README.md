@@ -1,4 +1,7 @@
 # pendientes
+Al eliminar una mascota desde Angular se debe eliminar la asociacion de Comunidades y la de los humanos
+Buscar manejo de transacaciones al momento de eliminar las mascotas en los humanos
+Mejorar con PetsByHumans
 Un usuario solo podrá ver los datos personales de los humanos que han actualizado su información.
 Debe haber un gestor de consentimientos de cceso a datos personales que permita a los usuarios a indicar que los datos personañes podrán ser accedidos por las veterinarias de las mascotas, o las tiendas petshop.
 En community.component al momento de crear una comunidad, se ha desagilitado la creación de acuerdo al rol. Se deve cambiar por la desabilitación por pertenencia a un grupo.

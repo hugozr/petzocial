@@ -29,6 +29,7 @@ import Places from "./collections/master/Places";
 import Emails from "./web/Emails";
 import CommunitiesByUsername from "./collections/community/CommunitiesByUsername";
 import CommunitiesByPets from "./collections/community/CommunitiesByPets";
+import HumansByPets from "./collections/master/HumansByPets";
 
 export default buildConfig({
   admin: {
@@ -54,6 +55,7 @@ export default buildConfig({
     Media,
     ExcelFile,
     Humans,
+    HumansByPets,
     CommunityTypes,
     Communities,
     CommunitiesByPets,
