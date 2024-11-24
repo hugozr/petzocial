@@ -30,6 +30,7 @@ import Emails from "./web/Emails";
 import CommunitiesByUsername from "./collections/community/CommunitiesByUsername";
 import CommunitiesByPets from "./collections/community/CommunitiesByPets";
 import HumansByPets from "./collections/master/HumansByPets";
+import HumansByCcommunities from "./collections/master/HumansByCommunities";
 
 export default buildConfig({
   admin: {
@@ -56,6 +57,7 @@ export default buildConfig({
     ExcelFile,
     Humans,
     HumansByPets,
+    HumansByCcommunities,
     CommunityTypes,
     Communities,
     CommunitiesByPets,

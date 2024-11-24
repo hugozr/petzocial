@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByHumanId, filterPetsByZone, petLike } from '../../utils';
+import { filterPets, filterPetsByHumanId, filterPetsByZone, getHumansByPetId, petLike } from '../../utils';
 import { genericDownloadExcel } from '../../excelUtils';
 
 const Pets: CollectionConfig = {
@@ -55,6 +55,14 @@ const Pets: CollectionConfig = {
       method: 'post',
       handler: async (req, res, next) => {
         const pets = await petLike(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: "/:id/humans-by-pet-id",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await getHumansByPetId(req.params.id, req.body); 
         res.status( 200 ).send(pets);
       },
     },

@@ -45,6 +45,35 @@ export const getPetsHumansByEmail = async (email: string) => {
     return {human, pets};
 }
 
+export const getPetsBysHumanId = async (id: string) => {
+    const humanPets = await payload.find({
+        collection: 'humans-by-pets',
+        depth: 2,
+        where: {
+            human: {
+                equals: id,
+            },
+        },
+    });
+    const pets = humanPets.docs.map(item => item.pet);
+        
+    return pets;
+}
+
+export const getHumansByPetId = async (id: string, body: any) => {
+    const humans = await payload.find({
+        collection: 'humans-by-pets',
+        depth: 2,
+        where: {
+            pet: {
+                equals: id,
+            },
+        },
+    });
+    return humans.docs.map(item => item.human);
+}
+
+
 const getUserById = async (id) => {
     const user = await payload.findByID({
         collection: 'app-users',
@@ -123,6 +152,7 @@ export const filterPetsByZone = async (data: any) => {
             ]
         },
     });
+    console.log(pets,"debls")
     return pets;
 }
 export const filterPets = async (data: any) => {
@@ -227,6 +257,11 @@ export const filterHumans = async (data: any) => {
             or: [
                 {
                     nickName: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    email: {
                         like: data.filter,
                     },
                 },
@@ -431,6 +466,25 @@ export const getMembers = async (communityId: string) => {
     });
     return members.docs;
 }
+
+export const getHumans = async (community: string) => {
+    const members = await payload.find({
+        collection: 'humans-by-communities',
+        depth: 3,
+        where: {
+            and: [
+                {
+                    "community.id": {
+                        equals: community,
+                    }
+                }
+            ]
+        },
+    });
+    return members.docs;
+}
+
+
 export const petIsCommunityMember = async (communityId: string, petId: string) => {
     const member = await payload.find({
         collection: 'communities-by-pets',
@@ -493,6 +547,28 @@ export const delCommunityByPet = async (body: any) => {
     });
     return toDelete.docs;
 }
+
+export const delHumanByCommunity = async (body: any) => {
+    const toDelete = await payload.delete({
+        collection: 'humans-by-communities',
+        where: {
+            and: [
+                {
+                    community: {
+                        equals: body.community,
+                    }
+                },
+                {
+                    pet: {
+                        equals: body.human
+                    }
+                }
+            ]
+        },
+    });
+    return toDelete.docs;
+}
+
 export const petInsert = async (body: any) => {
     const canInsert = await payload.find({
         collection: 'communities-by-pets',

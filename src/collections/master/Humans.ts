@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterHumans, getHumansByEmail, getPetsHumansByEmail, humanAssignedToPet } from '../../utils';
+import { filterHumans, getHumansByEmail, getPetsBysHumanId, getPetsHumansByEmail, humanAssignedToPet } from '../../utils';
 import { genericDownloadExcel } from '../../excelUtils';
 
 const Humans: CollectionConfig = {
@@ -29,6 +29,14 @@ const Humans: CollectionConfig = {
       method: "get",
       handler: async (req, res, next) => {
         const pets = await getPetsHumansByEmail(req.params.email); 
+        res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: "/:id/pets-by-human-id",
+      method: "get",
+      handler: async (req, res, next) => {
+        const pets = await getPetsBysHumanId(req.params.id); 
         res.status( 200 ).send(pets);
       },
     },
