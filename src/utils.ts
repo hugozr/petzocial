@@ -40,7 +40,6 @@ export const getPetsHumansByEmail = async (email: string) => {
             },
         });
         pets = humanPets.docs.map(item => item.pet);
-        console.log(pets,"nnnn")
     }
     return {human, pets};
 }
@@ -467,8 +466,8 @@ export const getMembers = async (communityId: string) => {
     return members.docs;
 }
 
-export const getHumans = async (community: string) => {
-    const members = await payload.find({
+export const getHumans = async (community: string, body: any) => {
+    const humans = await payload.find({
         collection: 'humans-by-communities',
         depth: 3,
         where: {
@@ -481,9 +480,10 @@ export const getHumans = async (community: string) => {
             ]
         },
     });
-    return members.docs;
-}
+    // pets = humanPets.docs.map(item => item.pet);
+    return humans.docs.map(item => item.human);
 
+}
 
 export const petIsCommunityMember = async (communityId: string, petId: string) => {
     const member = await payload.find({

@@ -26,9 +26,9 @@ const HumansByCcommunities: CollectionConfig = {
     },
     {
       path: '/:communityId/retrieve-humans',
-      method: 'get',
+      method: 'put',
       handler: async (req, res, next) => {
-        const members = await getHumans(req.params.communityId); //Si es nulo no se ha podido asociar
+        const members = await getHumans(req.params.communityId, req.body); //Si es nulo no se ha podido asociar
         res.status(200).send(members);
       },
     },
