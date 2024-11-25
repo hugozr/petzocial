@@ -46,6 +46,26 @@ const CommunityTypes: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'positions', // required
+      type: 'array', // required
+      label: 'Positions',
+      interfaceName: 'Positions', // optional
+      labels: {
+        singular: 'Position',
+        plural: 'Positions',
+      },
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+        },
+      ],
+    },
   ],
   endpoints: [
     {

@@ -44,6 +44,20 @@ const HumansByCcommunities: CollectionConfig = {
       type: 'relationship',
       relationTo: 'humans',
     },
+    {
+      name: 'position', 
+      type: 'group', 
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+        },
+      ],
+    },
   ],
 }
 
