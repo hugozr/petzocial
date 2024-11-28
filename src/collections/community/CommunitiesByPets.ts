@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { delCommunityByPet, getMembers, petInsert, petIsCommunityMember } from '../../utils';
+import { delCommunityByPet, getMembers, petIsCommunityMember, petToCommunity } from '../../utils';
 
 const CommunitiesByPets: CollectionConfig = {
   slug: 'communities-by-pets',
@@ -45,7 +45,7 @@ const CommunitiesByPets: CollectionConfig = {
       path: '/insert-member',
       method: "post",
       handler: async (req, res, next) => {
-        const member = await petInsert(req.body);
+        const member = await petToCommunity(req.body);
         res.status( 200 ).send(member);
       },
     },

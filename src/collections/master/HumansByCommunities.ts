@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { delCommunityByPet, delCommunityByUsername, delHumanByCommunity, filterCommunities, getCommunitiesByUsername, getHumans, getMembers, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
+import { delCommunityByPet, delCommunityByUsername, delHumanByCommunity, existsCommunitiesByEmail, filterCommunities, getCommunitiesByEmail, getCommunitiesByUsername, getHumans, getMembers, humanToCommunity, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
 
 const HumansByCcommunities: CollectionConfig = {
   slug: 'humans-by-communities',
@@ -19,7 +19,6 @@ const HumansByCcommunities: CollectionConfig = {
       path: '/delete',
       method: 'post',
       handler: async (req, res, next) => {
-        // const deleted = await delCommunityByPet(req.body); //Si es nulo no se ha podido asociar
         const deleted = await delHumanByCommunity(req.body); //Si es nulo no se ha podido asociar
         res.status(200).send(deleted);
       },
@@ -30,6 +29,31 @@ const HumansByCcommunities: CollectionConfig = {
       handler: async (req, res, next) => {
         const members = await getHumans(req.params.communityId, req.body); //Si es nulo no se ha podido asociar
         res.status(200).send(members);
+      },
+    },
+    {
+      path: '/insert-human',
+      method: "post",
+      handler: async (req, res, next) => {
+        const member = await humanToCommunity(req.body);
+        res.status( 200 ).send(member);
+      },
+    },
+    {
+      // Aun no lo uso
+      path: '/:email/retrieve-communities',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const communities = await getCommunitiesByEmail(req.params.email); 
+        res.status(200).send(communities);
+      },
+    },
+    {
+      path: '/:email/:communityId/exists',
+      method: 'get',
+      handler: async (req, res, next) => {
+        const exists = await existsCommunitiesByEmail(req.params.email,req.params.communityId); 
+        res.status(200).send(exists);
       },
     },
   ],

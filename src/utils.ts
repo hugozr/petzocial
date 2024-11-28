@@ -44,6 +44,73 @@ export const getPetsHumansByEmail = async (email: string) => {
     return {human, pets};
 }
 
+
+export const existsCommunitiesByEmail = async (email: string, communityId: string) => {
+    let exists = false;
+    let human: any = null;
+    const humans = await payload.find({
+        collection: 'humans',
+        depth: 1,
+        where: {
+            email: {
+                equals: email,
+            },
+        },
+    });
+    if (humans.docs[0]){
+        human = humans.docs[0];
+        const humanCommunities = await payload.find({
+            collection: 'humans-by-communities',
+            depth: 1,
+            where: {
+                and:
+                [
+                    {
+                        human: {
+                            equals: humans.docs[0].id,
+                        },
+                    },
+                    {
+                        community: {
+                            equals: communityId,
+                        },
+                    },
+                ]
+            } 
+        });
+        exists = humanCommunities.docs[0] ? true : false;
+    }
+    return {exists};
+}
+
+export const getCommunitiesByEmail = async (email: string) => {
+    let communities: any = null;
+    let human: any = null;
+    const humans = await payload.find({
+        collection: 'humans',
+        depth: 1,
+        where: {
+            email: {
+                equals: email,
+            },
+        },
+    });
+    if (humans.docs[0]){
+        human = humans.docs[0];
+        const humanCommunities = await payload.find({
+            collection: 'humans-by-communities',
+            depth: 2,
+            where: {
+                human: {
+                    equals: humans.docs[0].id,
+                },
+            },
+        });
+        communities = humanCommunities.docs.map(item => item.community);
+    }
+    return {human, communities};
+}
+
 export const getPetsBysHumanId = async (id: string) => {
     const humanPets = await payload.find({
         collection: 'humans-by-pets',
@@ -480,9 +547,9 @@ export const getHumans = async (community: string, body: any) => {
             ]
         },
     });
-    // pets = humanPets.docs.map(item => item.pet);
-    return humans.docs.map(item => item.human);
-
+    console.log(humans);
+    // return humans.docs.map(item => item.human);
+    return humans.docs.map(item => ({id: item.id, human: item.human, position: item.position}));
 }
 
 export const petIsCommunityMember = async (communityId: string, petId: string) => {
@@ -569,7 +636,7 @@ export const delHumanByCommunity = async (body: any) => {
     return toDelete.docs;
 }
 
-export const petInsert = async (body: any) => {
+export const petToCommunity = async (body: any) => {
     const canInsert = await payload.find({
         collection: 'communities-by-pets',
         where: {
@@ -587,7 +654,6 @@ export const petInsert = async (body: any) => {
             ]
         },
     });
-    console.log(canInsert, "ber")
     if(canInsert.docs[0]) return canInsert.docs[0]; 
     const toInsert = await payload.create({
         collection: 'communities-by-pets',
@@ -599,6 +665,37 @@ export const petInsert = async (body: any) => {
     console.log(toInsert, "insettado")
     return toInsert;
 }
+
+export const humanToCommunity = async (body: any) => {
+    const canInsert = await payload.find({
+        collection: 'humans-by-communities',
+        where: {
+            and: [
+                {
+                    community: {
+                        equals: body.community,
+                    }
+                },
+                {
+                    human: {
+                        equals: body.human
+                    }
+                }
+            ]
+        },
+    });
+    if(canInsert.docs[0]) return canInsert.docs[0]; 
+    const toInsert = await payload.create({
+        collection: 'humans-by-communities',
+        data: body
+        // data: {
+        //     human: body.human,
+        //     community: body.community,
+        // },
+    });
+    return toInsert;
+}
+
 export const petUpdate = async (communityId: string, data: any) => {
     const community: any = await payload.findByID({
         collection: 'communities',

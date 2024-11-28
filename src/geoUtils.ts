@@ -13,7 +13,6 @@ export const createPlace = async (doc: any) => {
     console.log(detailPlace,",,,,,,,,,,,,,,,", detailPlace.place_id);
     const placeId = detailPlace.place_id;
     const foundPlaces: any = await getPlaceByPlaceId(placeId);
-    console.log(foundPlaces,"ssssssssssssssssssssss")
     let refPlaceId = null;
 
     if(foundPlaces.length == 0){
