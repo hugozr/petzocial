@@ -28,7 +28,7 @@ export const getPetsHumansByEmail = async (email: string) => {
             },
         },
     });
-    if (humans.docs[0]){
+    if (humans.docs[0]) {
         human = humans.docs[0];
         const humanPets = await payload.find({
             collection: 'humans-by-pets',
@@ -41,7 +41,7 @@ export const getPetsHumansByEmail = async (email: string) => {
         });
         pets = humanPets.docs.map(item => item.pet);
     }
-    return {human, pets};
+    return { human, pets };
 }
 
 
@@ -57,30 +57,30 @@ export const existsCommunitiesByEmail = async (email: string, communityId: strin
             },
         },
     });
-    if (humans.docs[0]){
+    if (humans.docs[0]) {
         human = humans.docs[0];
         const humanCommunities = await payload.find({
             collection: 'humans-by-communities',
             depth: 1,
             where: {
                 and:
-                [
-                    {
-                        human: {
-                            equals: humans.docs[0].id,
+                    [
+                        {
+                            human: {
+                                equals: humans.docs[0].id,
+                            },
                         },
-                    },
-                    {
-                        community: {
-                            equals: communityId,
+                        {
+                            community: {
+                                equals: communityId,
+                            },
                         },
-                    },
-                ]
-            } 
+                    ]
+            }
         });
         exists = humanCommunities.docs[0] ? true : false;
     }
-    return {exists};
+    return { exists };
 }
 
 export const getCommunitiesByEmail = async (email: string) => {
@@ -95,7 +95,7 @@ export const getCommunitiesByEmail = async (email: string) => {
             },
         },
     });
-    if (humans.docs[0]){
+    if (humans.docs[0]) {
         human = humans.docs[0];
         const humanCommunities = await payload.find({
             collection: 'humans-by-communities',
@@ -108,7 +108,7 @@ export const getCommunitiesByEmail = async (email: string) => {
         });
         communities = humanCommunities.docs.map(item => item.community);
     }
-    return {human, communities};
+    return { human, communities };
 }
 
 export const getPetsBysHumanId = async (id: string) => {
@@ -122,7 +122,6 @@ export const getPetsBysHumanId = async (id: string) => {
         },
     });
     const pets = humanPets.docs.map(item => item.pet);
-        
     return pets;
 }
 
@@ -139,6 +138,40 @@ export const getHumansByPetId = async (id: string, body: any) => {
     return humans.docs.map(item => item.human);
 }
 
+
+
+export const canDeletePet = async (id: string) => {
+    const humans = await payload.find({
+        collection: 'humans-by-pets',
+        depth: 1,
+        where: {
+            pet: {
+                equals: id,
+            },
+        },
+    });
+    if (humans.totalDocs > 0) {
+        return ({ canDelete: false, message: "There are associated humans. Check that!" })
+    }
+    return ({ canDelete: true, message: "You can delete this" });
+}
+
+
+export const canDeleteHuman = async (id: string) => {
+    const humans = await payload.find({
+        collection: 'humans-by-pets',
+        depth: 1,
+        where: {
+            human: {
+                equals: id,
+            },
+        },
+    });
+    if (humans.totalDocs > 0) {
+        return ({ canDelete: false, message: "There are associated pets. Check that!" })
+    }
+    return ({ canDelete: true, message: "You can delete this" });
+}
 
 const getUserById = async (id) => {
     const user = await payload.findByID({
@@ -163,7 +196,6 @@ export const associateHuman = async (userId) => {
     return returned
 }
 export const getUsersByName = async (username) => {
-
     const users = await payload.find({
         collection: 'app-users',
         where: {
@@ -186,7 +218,6 @@ export const getUsersByEmail = async (email) => {
     return users;
 }
 export const filterPetsByZone = async (data: any) => {
-    console.log("aaaaaaaaaa");
     const pets = await payload.find({
         collection: 'pets',
         page: data.page,
@@ -218,7 +249,6 @@ export const filterPetsByZone = async (data: any) => {
             ]
         },
     });
-    console.log(pets,"debls")
     return pets;
 }
 export const filterPets = async (data: any) => {
@@ -248,12 +278,27 @@ export const filterPets = async (data: any) => {
     });
     return pets;
 }
-export const filterPetsByHumanId = async (data: any) => {
-    const human = await payload.findByID({
-        collection: 'humans',
-        id: data.id
+export const filterPetsByHumanIdAndZone = async (data: any) => {
+    const humanPets = await payload.find({
+        collection: 'humans-by-pets',
+        depth: 2,
+        where: {
+            and: [
+                {
+                    human: {
+                        equals: data.id,
+                    },
+                },
+                {
+                    "pet.zone": {
+                        equals: data.zoneId,
+                    },
+                }
+            ]
+        },
     });
-    return human.pets;
+    const pets = humanPets.docs.map(item => item.pet);
+    return pets;
 }
 export const petLike = async (data: any) => {
     return { "like": "ok" };
@@ -448,7 +493,7 @@ export const communityUpdate = async (userId: string, data: any) => {
 export const retrieveCommunitiesByUsername = async (username: string) => {
     const communities: any = await payload.find({
         collection: 'communities',
-        depth: 0,
+        depth: 1,
         where: {
             kcUserName: {
                 equals: username,
@@ -459,6 +504,42 @@ export const retrieveCommunitiesByUsername = async (username: string) => {
     return communities;
 }
 
+export const retrieveCommunitiesByUsernameAndZone = async (username: string, zone: string) => {
+    const communities: any = await payload.find({
+        collection: 'communities',
+        depth: 1,
+        where: {
+            and: [
+                {
+                    kcUserName: {
+                        equals: username,
+                    }
+                },
+                {
+                    zone: {
+                        equals: zone,
+                    }
+                },
+            ]
+
+        },
+    }
+    );
+    return communities;
+}
+
+
+export const linkPetToHuman = async (pet: any) => {
+    console.log(pet, "puta")
+    const created = await payload.create({
+        collection: "humans-by-pets",
+        data: {
+            human: pet.human.humanId,
+            pet: pet.id,
+        }
+    });
+    return created;
+}
 
 export const linkCommunityToUsername = async (community: any) => {
     const created = await payload.create({
@@ -478,25 +559,25 @@ export const createPet = async (pet: any, human: any, zoneId: string) => {
         zone: zoneId,
         specie: {
             specieId: pet.specie.specieId,
-            name:  pet.specie.name,
+            name: pet.specie.name,
         },
         breed: {
             breedId: pet.breed.breedId,
-            name:  pet.breed.name
+            name: pet.breed.name
         }
     };
-    if(human){
+    if (human) {
         petToAdd.human = {
             name: human.name,
             humanId: human.id,
             email: human.email
         }
-    } 
+    }
     const createdPet: any = await payload.create({
         collection: "pets",
-        data:  petToAdd
+        data: petToAdd
     });
-    
+
     return createdPet;
 }
 
@@ -549,7 +630,7 @@ export const getHumans = async (community: string, body: any) => {
     });
     console.log(humans);
     // return humans.docs.map(item => item.human);
-    return humans.docs.map(item => ({id: item.id, human: item.human, position: item.position}));
+    return humans.docs.map(item => ({ id: item.id, human: item.human, position: item.position }));
 }
 
 export const petIsCommunityMember = async (communityId: string, petId: string) => {
@@ -654,7 +735,7 @@ export const petToCommunity = async (body: any) => {
             ]
         },
     });
-    if(canInsert.docs[0]) return canInsert.docs[0]; 
+    if (canInsert.docs[0]) return canInsert.docs[0];
     const toInsert = await payload.create({
         collection: 'communities-by-pets',
         data: {
@@ -684,7 +765,7 @@ export const humanToCommunity = async (body: any) => {
             ]
         },
     });
-    if(canInsert.docs[0]) return canInsert.docs[0]; 
+    if (canInsert.docs[0]) return canInsert.docs[0];
     const toInsert = await payload.create({
         collection: 'humans-by-communities',
         data: body
@@ -694,6 +775,27 @@ export const humanToCommunity = async (body: any) => {
         // },
     });
     return toInsert;
+}
+
+export const canDeleteCommunity = async (communityId: string) => {
+    const humanCommunities = await payload.find({
+        collection: 'humans-by-communities',
+        depth: 1,
+        where: {
+            and:
+                [
+                    {
+                        community: {
+                            equals: communityId,
+                        },
+                    }
+                ]
+        }
+    });
+    if (humanCommunities.totalDocs > 0) {
+        return ({ canDelete: false, message: "There are associated humans. Check the organization" })
+    }
+    return ({ canDelete: true, message: "You can delete this" })
 }
 
 export const petUpdate = async (communityId: string, data: any) => {
@@ -727,31 +829,31 @@ export const petUpdate = async (communityId: string, data: any) => {
     return result;
 }
 
-export const humanAssignedToPet = async (humanId: string, petId: string) => {
+// export const humanAssignedToPet = async (humanId: string, petId: string) => {
 
-    //HZUMAETA: Verifico que el humano exista. Si existe obtengo el arreglo de las mascotas que tiene
-    const human: any = await payload.findByID({
-        collection: 'humans',
-        id: humanId
-    });
-    if (human) {
-        let petIds: any = human.pets ? human.pets.map(pet => pet.id) : [];
-        if (!petIds.includes(petId)) {
-            petIds.push(petId);
-            const result = await payload.update({
-                collection: 'humans',
-                id: humanId,
-                data: {
-                    pets: petIds
-                },
-            })
-        }
-    }
-    else {
-        return null;
-    }
-    return { "ok": "ok" };
-}
+//     //HZUMAETA: Verifico que el humano exista. Si existe obtengo el arreglo de las mascotas que tiene
+//     const human: any = await payload.findByID({
+//         collection: 'humans',
+//         id: humanId
+//     });
+//     if (human) {
+//         let petIds: any = human.pets ? human.pets.map(pet => pet.id) : [];
+//         if (!petIds.includes(petId)) {
+//             petIds.push(petId);
+//             const result = await payload.update({
+//                 collection: 'humans',
+//                 id: humanId,
+//                 data: {
+//                     pets: petIds
+//                 },
+//             })
+//         }
+//     }
+//     else {
+//         return null;
+//     }
+//     return { "ok": "ok" };
+// }
 
 
 export const syncronizeToApUser = async (keycloakData: any) => {

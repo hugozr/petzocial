@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { filterCommunities, linkCommunityToUsername, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
+import { canDeleteCommunity, filterCommunities, linkCommunityToUsername, petUpdate, retrieveCommunitiesByUsername, retrieveCommunitiesByUsernameAndZone } from '../../utils';
 
 const Communities: CollectionConfig = {
   slug: 'communities',
@@ -42,12 +42,27 @@ const Communities: CollectionConfig = {
         res.status( 200 ).send(community);
       },
     },
-
+    {
+      path: '/:communityId/can-delete',
+      method: "get",
+      handler: async (req, res, next) => {
+        const community = await canDeleteCommunity(req.params.communityId);
+        res.status( 200 ).send(community);
+      },
+    },
     {
       path: '/:username/by-username',
       method: "get",
       handler: async (req, res, next) => {
         const communities = await retrieveCommunitiesByUsername(req.params.username);
+        res.status( 200 ).send(communities);
+      },
+    },
+    {
+      path: '/:username/:zone/by-username-and-zone',
+      method: "get",
+      handler: async (req, res, next) => {
+        const communities = await retrieveCommunitiesByUsernameAndZone(req.params.username, req.params.zone);
         res.status( 200 ).send(communities);
       },
     },

@@ -83,7 +83,6 @@ async function operationAuth(url: string, method: string, authHeader: any) {
                 ...authHeader,
             },
         });
-        console.log(response);
         return { "status": response.status };
     } catch (error) {
         console.error('Error en la solicitud:', error);
@@ -101,7 +100,6 @@ async function operationAdmin(url: string, method: string, authHeader: any) {
                 ...authHeader,
             },
         });
-        // const resp = response.json();
         return await response.json();
     } catch (error) {
         console.error('Error en la solicitud:', error);

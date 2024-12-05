@@ -1,6 +1,6 @@
 import payload from 'payload';
 import { CollectionConfig } from 'payload/types'
-import { filterPets, filterPetsByHumanId, filterPetsByZone, getHumansByPetId, petLike } from '../../utils';
+import { canDeletePet, filterPets, filterPetsByHumanIdAndZone, filterPetsByZone, getHumansByPetId, linkPetToHuman, petLike } from '../../utils';
 import { genericDownloadExcel } from '../../excelUtils';
 
 const Pets: CollectionConfig = {
@@ -14,7 +14,17 @@ const Pets: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ["name","specie","breed","gender","birthday","human"]
+    defaultColumns: ["name", "specie", "breed", "gender", "birthday", "human"]
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, previousDoc }) => {
+        if (operation === 'create') {
+          const petHuman = await linkPetToHuman(doc);
+        }
+        console.log('Documento anterior:', previousDoc);
+      }
+    ],
   },
   endpoints: [
     {
@@ -22,7 +32,7 @@ const Pets: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const pets = await filterPets(req.body);
-        res.status( 200 ).send(pets);
+        res.status(200).send(pets);
       },
     },
     {
@@ -30,24 +40,24 @@ const Pets: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const pets = await filterPetsByZone(req.body);
-        res.status( 200 ).send(pets);
+        res.status(200).send(pets);
       },
     },
     {
-      path: "/by-human-id",
+      path: "/by-human-id-and-zone",
       method: "put",
       handler: async (req, res, next) => {
-        const pets = await filterPetsByHumanId(req.body);
-        res.status( 200 ).send(pets);
+        const pets = await filterPetsByHumanIdAndZone(req.body);
+        res.status(200).send(pets);
       },
     },
     {
       path: '/download-in-excel',
       method: 'get',
       handler: async (req, res, next) => {
-        const dataExcel = await genericDownloadExcel("pets", "pets"); 
-        res.set('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.status( 200 ).send(dataExcel);
+        const dataExcel = await genericDownloadExcel("pets", "pets");
+        res.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.status(200).send(dataExcel);
       },
     },
     {
@@ -55,52 +65,60 @@ const Pets: CollectionConfig = {
       method: 'post',
       handler: async (req, res, next) => {
         const pets = await petLike(req.body);
-        res.status( 200 ).send(pets);
+        res.status(200).send(pets);
+      },
+    },
+    {
+      path: "/:id/can-delete",
+      method: "get",
+      handler: async (req, res, next) => {
+        const pets = await canDeletePet(req.params.id);
+        res.status(200).send(pets);
       },
     },
     {
       path: "/:id/humans-by-pet-id",
       method: "put",
       handler: async (req, res, next) => {
-        const pets = await getHumansByPetId(req.params.id, req.body); 
-        res.status( 200 ).send(pets);
+        const pets = await getHumansByPetId(req.params.id, req.body);
+        res.status(200).send(pets);
       },
     },
   ],
   fields: [
     {
-      name: 'name', 
-      type: 'text', 
+      name: 'name',
+      type: 'text',
       required: true,
     },
     {
-      name: 'comment', 
-      type: 'textarea', 
+      name: 'comment',
+      type: 'textarea',
     },
     {
-      name: 'zone', 
-      type: 'relationship', 
-      relationTo: 'zones', 
+      name: 'zone',
+      type: 'relationship',
+      relationTo: 'zones',
       hasMany: false,
     },
     {
-      name: 'address', 
-      type: 'text', 
+      name: 'address',
+      type: 'text',
     },
     {
-      name: 'gender', 
-      type: 'text', 
+      name: 'gender',
+      type: 'text',
     },
     {
-      name: 'birthday', 
-      type: 'date', 
+      name: 'birthday',
+      type: 'date',
     },
     {
-      name: 'specie', 
-      type: 'group', 
-      interfaceName: 'Specie', 
+      name: 'specie',
+      type: 'group',
+      interfaceName: 'Specie',
       fields: [
-        
+
         {
           name: 'specieId',
           type: 'text',
@@ -114,9 +132,9 @@ const Pets: CollectionConfig = {
       ],
     },
     {
-      name: 'breed', 
-      type: 'group', 
-      interfaceName: 'Breed', 
+      name: 'breed',
+      type: 'group',
+      interfaceName: 'Breed',
       fields: [
         {
           name: 'breedId',
@@ -132,12 +150,12 @@ const Pets: CollectionConfig = {
     },
     {
       name: 'petImage',
-      type: 'upload', 
+      type: 'upload',
       relationTo: 'media',
     },
     {
-      name: 'human', 
-      type: 'group', 
+      name: 'human',
+      type: 'group',
       fields: [
         {
           name: 'name',

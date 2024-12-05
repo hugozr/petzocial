@@ -1,5 +1,5 @@
 # pendientes
-
+Cuando actualizo la data de un humano debo disparar hacia petHuamns 3001
 Elminar CommunitiesByUsername
 Al eliminar una mascota desde Angular se debe eliminar la asociacion de Comunidades y la de los humanos
 Buscar manejo de transacaciones al momento de eliminar las mascotas en los humanos
