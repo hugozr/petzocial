@@ -334,9 +334,40 @@ export const filterVets = async (data: any) => {
             ]
         },
     });
-    console.log()
     return vets;
 }
+
+export const filterVetsByZone = async (data: any) => {
+    console.log(data,"aaaaaaaaaaaaa")
+    const vets = await payload.find({
+        collection: 'vets',
+        page: data.page,
+        limit: data.limit,
+        where: {
+            or: [
+                {
+                    name: {
+                        like: data.filter,
+                    },
+                },
+                {
+                    comment: {
+                        like: data.filter,
+                    },
+                },
+            ],
+            and: [
+                {
+                    zone: {
+                        equals: data.zone
+                    }
+                }
+            ]
+        },
+    });
+    return vets;
+}
+
 export const filterPetshops = async (data: any) => {
     const petshops = await payload.find({
         collection: 'petshops',

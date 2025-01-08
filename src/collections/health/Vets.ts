@@ -1,6 +1,6 @@
 import { CollectionConfig } from 'payload/types'
 import { genericDownloadExcel } from '../../excelUtils';
-import { filterVets } from '../../utils';
+import { filterVets, filterVetsByZone } from '../../utils';
 import { createPlace } from '../../geoUtils';
 import { text } from 'express';
 
@@ -24,11 +24,6 @@ const Vets: CollectionConfig = {
           const place = await createPlace(doc);
           console.log(place);
         }
-        // if (operation === 'update') {
-        //   console.log('Un documento fue modificado:', doc);
-        //   const place = await createPlace(doc);
-        //   console.log(place);
-        // }
         console.log('Documento anterior:', previousDoc);
       }
     ],
@@ -39,6 +34,14 @@ const Vets: CollectionConfig = {
       method: "put",
       handler: async (req, res, next) => {
         const pets = await filterVets(req.body);
+        res.status( 200 ).send(pets);
+      },
+    },
+    {
+      path: "/filter-me-by-zone",
+      method: "put",
+      handler: async (req, res, next) => {
+        const pets = await filterVetsByZone(req.body);
         res.status( 200 ).send(pets);
       },
     },
@@ -58,6 +61,12 @@ const Vets: CollectionConfig = {
       name: 'name', 
       type: 'text', 
       required: true,
+    },
+    {
+      name: 'zone',
+      type: 'relationship',
+      relationTo: 'zones',
+      hasMany: false,
     },
     {
       name: 'phone', 
