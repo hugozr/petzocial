@@ -30,6 +30,10 @@ const CommunityTypes: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: 'forVets', 
+      type: 'checkbox', 
+    },
+    {
       name: 'modality', 
       type: 'select', 
       hasMany: false,

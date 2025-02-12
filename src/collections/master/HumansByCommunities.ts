@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload/types'
-import { delCommunityByPet, delCommunityByUsername, delHumanByCommunity, existsCommunitiesByEmail, filterCommunities, getCommunitiesByEmail, getCommunitiesByUsername, getHumans, getMembers, humanToCommunity, petUpdate, retrieveCommunitiesByUsername } from '../../utils';
+import { delCommunityByPet, delCommunityByUsername, delHumanByCommunity, existsCommunitiesByEmail, filterCommunities, getCommunitiesByEmail, getCommunitiesByUsername, getHumans, getMembers, humanToCommunity, petUpdate, retrieveCommunitiesByUsername, retrieveHumansByCommunities } from '../../utils';
 
 const HumansByCcommunities: CollectionConfig = {
   slug: 'humans-by-communities',
@@ -40,7 +40,6 @@ const HumansByCcommunities: CollectionConfig = {
       },
     },
     {
-      // Aun no lo uso
       path: '/:email/retrieve-communities',
       method: 'get',
       handler: async (req, res, next) => {
@@ -54,6 +53,15 @@ const HumansByCcommunities: CollectionConfig = {
       handler: async (req, res, next) => {
         const exists = await existsCommunitiesByEmail(req.params.email,req.params.communityId); 
         res.status(200).send(exists);
+      },
+    },
+    {
+      path: '/humans-from-communities',
+      method: 'post',
+      handler: async (req, res, next) => {
+        console.log("precio")
+        const humans = await retrieveHumansByCommunities(req.body); 
+        res.status(200).send(humans);
       },
     },
   ],

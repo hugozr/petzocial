@@ -27,7 +27,6 @@ const VetTypes: CollectionConfig = {
       name: 'displayedOnMobileDevices', 
       type: 'checkbox', 
     },
-    
   ],
 }
 

@@ -83,6 +83,34 @@ export const existsCommunitiesByEmail = async (email: string, communityId: strin
     return { exists };
 }
 
+export const retrieveHumansByCommunities = async (communityIds: any) => {
+    console.log(communityIds, "k")
+    const humans: any = [];
+    for (const commId of communityIds) {
+        console.log(commId, "busco")
+        const found: any = await payload.find({
+            collection: "humans-by-communities",
+            depth: 1,
+            where: {
+                and: [
+                    {
+                        "community.id": {
+                            equals: commId,
+                        },
+                    },
+                ],
+            },
+        });
+        for (const commsByHumansFound of found.docs) {
+            const alreadyExists = humans.find(item => item.id === commsByHumansFound.human.id);
+            if (!alreadyExists) {
+                humans.push(commsByHumansFound.human);
+            }
+        }
+    }
+    return humans;
+}
+
 export const getCommunitiesByEmail = async (email: string) => {
     let communities: any = null;
     let human: any = null;
@@ -153,9 +181,8 @@ export const canDeletePet = async (id: string) => {
     if (humans.totalDocs > 0) {
         return ({ canDelete: false, message: "There are associated humans. Check that!" })
     }
-    return ({ canDelete: true, message: "You can delete this" });
+    return ({ canDelete: true, message: "You can delete this record" });
 }
-
 
 export const canDeleteHuman = async (id: string) => {
     const humans = await payload.find({
@@ -170,7 +197,7 @@ export const canDeleteHuman = async (id: string) => {
     if (humans.totalDocs > 0) {
         return ({ canDelete: false, message: "There are associated pets. Check that!" })
     }
-    return ({ canDelete: true, message: "You can delete this" });
+    return ({ canDelete: true, message: "You can delete this record" });
 }
 
 const getUserById = async (id) => {
@@ -826,7 +853,7 @@ export const canDeleteCommunity = async (communityId: string) => {
     if (humanCommunities.totalDocs > 0) {
         return ({ canDelete: false, message: "There are associated humans. Check the organization" })
     }
-    return ({ canDelete: true, message: "You can delete this" })
+    return ({ canDelete: true, message: "You can delete this record" })
 }
 
 export const petUpdate = async (communityId: string, data: any) => {
